@@ -6,38 +6,56 @@ class TaskList extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(props.tasks)
+        this.state = {
+            tasks: []
+        }
+
+    }
+
+    componentDidMount() {
+        this.getTasks();
+    }
+
+    getTasks = () => {
+        fetch(`http://localhost:5000/tasks/?idusers=1`)
+        .then((response) => response.json())
+        .then((responseJson) => {
+          this.setState({tasks: responseJson.tasks})
+        })
+        .catch((error) => {
+          console.log(error); 
+        })
     }
 
     getCheckedTask = (id) => {
-        return this.props.tasks[id].complete;
+        return Boolean(this.state.tasks[id-1].completed);
     }
     
     toggleCheckbox = (id) => {
-        let isComplete = this.props.tasks[id].complete;
+/*          let isComplete = this.state.tasks[id-1].completed;
 
         this.setState(prevState => ({
             tasks: prevState.tasks.map(
-            task => task.id === id ? {...task, complete: !isComplete} : task
+            task => task.idusers === id-1 ? {...task, complete: !isComplete} : task
             )
-        }))
-    }
+        }))  */
+    } 
 
     render() {
         console.log(this.props.tasks)
         return (
-            this.props.tasks.map((task) => {
+            this.state.tasks.map((task) => {
             return (
-                <View>
+         
                     <CheckBox 
                         center 
-                        key={task.id} 
+                        key={task.idtasks} 
                         title={task.title} 
-                        checked={this.getCheckedTask(task.id)} 
-                        onPress={() => this.toggleCheckbox(task.id)}  
+                        checked={this.getCheckedTask(task.idtasks)} 
+                        onPress={() => this.toggleCheckbox(task.idtasks)}  
                     />
-                </View>
-            )
+         
+                )
             })
         )
 

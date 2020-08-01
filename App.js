@@ -30,15 +30,45 @@ import {
 import { CheckBox } from 'react-native-elements';
 import TaskList from './components/TaskList';
 import NewTask from './components/NewTask';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+//const fetch = require("node-fetch");
 
 class App extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      taskName: '',
-      tasks: []
+      tasks: [],
+      name: '',
+      newTask: false
     }
+  }
+
+  componentDidMount() {
+    this.getUserName();
+  }
+
+
+  getUserName = () => {
+    fetch('http://localhost:5000/getUserName')
+      .then((response) => response.json())
+      .then((responseJson) => {
+      
+        this.setState({name: responseJson.data.fname})
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
+
+  createNewTask = () => {
+    this.setState({newTask: true})
+  }
+
+  taskSubmitted = () => {
+    this.setState({newTask: false})
+    this.child.getTasks();
   }
 
   render() {
@@ -49,15 +79,34 @@ class App extends React.Component {
           padding: 30,
         }}>
 
-          <Text style={{
-            fontSize: 40
+        <View style={{
+          display: "flex", 
+          flexDirection: "row",
+          justifyContent: "space-between"
           }}>
-            Tasked
-          </Text>
+
+          <View style={{display: "flex", flexDirection: "column"}}>
+            <Text style={{fontSize: 40}}>Tasked</Text>
+            <Text>Hi, {this.state.name}</Text>
+          </View>
+          
+          <TouchableOpacity style={{
+            height: 70,
+            width: 70,
+            borderRadius: 35,
+            backgroundColor: '#44bd32',
+            justifyContent: 'center',
+            alignItems: 'center'
+            }}
+            onPress={this.createNewTask}>
+            <Icon name='plus' size={40} color='white'/>
+          </TouchableOpacity>
+
+        </View>
 
 
-          <NewTask />
-          <TaskList tasks={this.state.tasks}/>
+          {this.state.newTask ? <NewTask taskSubmitted={this.taskSubmitted} />: null}
+          <TaskList ref={child => {this.child = child}} {...this.props} tasks={this.state.tasks}/>
 
 
         </View>
