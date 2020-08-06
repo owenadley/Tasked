@@ -5,6 +5,9 @@
  * @format
  * @flow strict-local
  */
+import 'react-native-gesture-handler';
+import { NavigationContainer, StackActions } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import React from 'react';
 import {
@@ -17,6 +20,7 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
+  Button
 } from 'react-native';
 
 import {
@@ -28,89 +32,39 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import { CheckBox } from 'react-native-elements';
-import TaskList from './components/TaskList';
-import NewTask from './components/NewTask';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import NewList from './components/NewList';
+import ListPreview from './components/ListPreview';
+import List from './components/List';
 //const fetch = require("node-fetch");
+
+import Home from './components/Home';
+
+const Stack = createStackNavigator();    
 
 class App extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [],
       name: '',
-      newTask: false
+      lists: [],
+      newlist: false
     }
   }
 
-  componentDidMount() {
-    this.getUserName();
-  }
 
-
-  getUserName = () => {
-    fetch('http://localhost:5000/getUserName')
-      .then((response) => response.json())
-      .then((responseJson) => {
-      
-        this.setState({name: responseJson.data.fname})
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
-
-  createNewTask = () => {
-    this.setState({newTask: true})
-  }
-
-  taskSubmitted = () => {
-    this.setState({newTask: false})
-    this.child.getTasks();
-  }
 
   render() {
-    console.log('renderin app')
+
     return (
-      <View>
-        <View style={{
-          padding: 30,
-        }}>
-
-        <View style={{
-          display: "flex", 
-          flexDirection: "row",
-          justifyContent: "space-between"
-          }}>
-
-          <View style={{display: "flex", flexDirection: "column"}}>
-            <Text style={{fontSize: 40}}>Tasked</Text>
-            <Text>Hi, {this.state.name}</Text>
-          </View>
-          
-          <TouchableOpacity style={{
-            height: 70,
-            width: 70,
-            borderRadius: 35,
-            backgroundColor: '#44bd32',
-            justifyContent: 'center',
-            alignItems: 'center'
-            }}
-            onPress={this.createNewTask}>
-            <Icon name='plus' size={40} color='white'/>
-          </TouchableOpacity>
-
-        </View>
-
-
-          {this.state.newTask ? <NewTask taskSubmitted={this.taskSubmitted} />: null}
-          <TaskList ref={child => {this.child = child}} {...this.props} tasks={this.state.tasks}/>
-
-
-        </View>
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={Home}/>
+          <Stack.Screen name="NewList" component={NewList}/>
+          <Stack.Screen name="List" component={List}/>
+        </Stack.Navigator>
+      </NavigationContainer>      
     );
 
   }
