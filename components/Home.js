@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 
 import React, {useState, useEffect} from 'react';
 import {
@@ -15,17 +7,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement } from '../redux/actions';
-
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListPreview from './ListPreview';
+import SignOut from './SignOut'
 
 function Home(props) {
 
     const [name, setName] = useState('');
     const [lists, setLists] = useState([]);
-
 
     useEffect(() => {
       getLists();
@@ -62,18 +51,11 @@ function Home(props) {
     const selectList = (list) => {
         props.navigation.navigate('List', {list: list})
     }
-    
-    const counter = useSelector(state => state.counter)
-    const isLogged = useSelector(state => state.isLogged)
-    const disptach = useDispatch();
 
     return (
         <View style={{flex:1}}>
 
-          {isLogged ? <Text>Logged In</Text> : <Text>Not logged In</Text>}
-          <Text>{counter}</Text>
-          <TouchableOpacity onPress={() => disptach(increment(5))}><Text>+</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => disptach(decrement())}><Text>-</Text></TouchableOpacity>
+          <SignOut />
 
           <View style={{
             padding: 30,
