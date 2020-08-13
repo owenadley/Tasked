@@ -17,6 +17,7 @@ function NewList(props) {
 
     const [listName, setListName] = useState(0);
 
+
     const createList = () => {
         fetch(`http://localhost:5000/createList/?listname=${listName}`, {
             method: 'POST',

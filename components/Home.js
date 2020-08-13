@@ -5,16 +5,24 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Button
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListPreview from './ListPreview';
 import SignOut from './SignOut'
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
+Home['navigationOptions'] = screenProps => ({
+  headerLeft: <Button onPress={props.navigation.navigate('DrawerOpen')} title="="/>
+});
 
 function Home(props) {
 
     const [name, setName] = useState('');
     const [lists, setLists] = useState([]);
+    const Drawer = createDrawerNavigator();
+
 
     useEffect(() => {
       getLists();
@@ -44,8 +52,8 @@ function Home(props) {
     } 
 
     const createNewList = () => {
-        let getLists = getLists;
-        props.navigation.navigate('NewList', {updateLists: getLists});
+        let updateLists = getLists;
+        props.navigation.navigate('NewList', {updateLists: updateLists});
     }
 
     const selectList = (list) => {
@@ -53,9 +61,8 @@ function Home(props) {
     }
 
     return (
-        <View style={{flex:1}}>
 
-          <SignOut />
+        <View style={{flex:1}}>
 
           <View style={{
             padding: 30,
@@ -103,6 +110,7 @@ function Home(props) {
 
           </View>
         </View>
+
     );
   
       

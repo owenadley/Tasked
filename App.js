@@ -1,11 +1,12 @@
 import 'react-native-gesture-handler';
-import { NavigationContainer, DrawerActions } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+
 import React, { useState, useEffect, useMemo, useReducer } from 'react';
 import {
   Text,
   View,
+  Button
 } from 'react-native';
 import NewList from './components/NewList';
 import List from './components/List';
@@ -18,10 +19,10 @@ import reducers from './redux/reducers';
 import { AuthContext } from './components/context'
 import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import HomeNav from './components/HomeNav'
 
 const store = createStore(reducers);
 const Stack = createStackNavigator();    
-const Drawer = createDrawerNavigator();
 
 function App() {
 
@@ -135,11 +136,11 @@ function App() {
             {loginState.userToken !== null ? (
 
             <>
-              <Drawer.Navigator>
-                <Stack.Screen name="Home" component={Home}/>
+      
+                <Stack.Screen name="HomeNav" component={HomeNav} />            
                 <Stack.Screen name="NewList" component={NewList}/>
                 <Stack.Screen name="List" component={List}/>
-              </Drawer.Navigator>
+        
             </>
 
             ) : ( 
