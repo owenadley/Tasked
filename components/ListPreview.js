@@ -2,17 +2,22 @@ import React from 'react';
 import {
   View,
   Text,
+  Dimensions,
 } from 'react-native';
 
 export default function ListPreview(props) {
     return (
         <View 
             style={{ 
-                borderWidth: 2,
+                width: Dimensions.get('window').width / 2 - 60,
+                height: 180,
+                borderWidth: 0,
                 borderColor: '#000',
                 borderRadius: 5,
-                padding: 40,
-                margin: 10
+                padding: 10,
+                margin: 20,
+                backgroundColor: '#fff',
+                elevation:20
             }}>  
             <Text style={{fontSize: 18}}>{props.name}</Text>
         </View>

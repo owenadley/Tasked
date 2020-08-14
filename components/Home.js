@@ -12,10 +12,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import ListPreview from './ListPreview';
 import SignOut from './SignOut'
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import Header from './Header';
 
-Home['navigationOptions'] = screenProps => ({
-  headerLeft: <Button onPress={props.navigation.navigate('DrawerOpen')} title="="/>
-});
 
 function Home(props) {
 
@@ -62,52 +60,44 @@ function Home(props) {
 
     return (
 
-        <View style={{flex:1}}>
+        <View style={{flex:1, backgroundColor:'#ecf0f1'}}>
 
           <View style={{
-            padding: 30,
+            padding: 20,
           }}>
+                
 
-          <View style={{
-            display: "flex", 
-            flexDirection: "row",
-            justifyContent: "space-between"
-            }}>
+          <Header 
+            navigation={props.navigation} 
+            iname="bars" 
+            nHandler={props.navigation.openDrawer} 
+            pHandler={createNewList}/>
 
-            <View style={{display: "flex", flexDirection: "column"}}>
-              <Text style={{fontSize: 30}}>Hi, {name}</Text>
-            </View>
-            
-            <TouchableOpacity style={{
-              height: 70,
-              width: 70,
-              borderRadius: 35,
-              backgroundColor: '#44bd32',
-              justifyContent: 'center',
-              alignItems: 'center'
-              }}
-              onPress={createNewList}>
 
-              <Icon name='plus' size={40} color='white'/>
-
-            </TouchableOpacity>
+     
+          <View style={{display: "flex", flexDirection: "column"}}>
+            <Text style={{fontSize: 30}}>Hi, {name}</Text>
           </View>
+            
+      
 
-              
-            <ScrollView>
-            {/* On the home page, list out all of the users lists */}   
-            {lists.map((list) => {
-              return (
-          
-                      <TouchableOpacity key={list.idlists} onPress={() => selectList(list)}>
-                          <ListPreview name={list.name}/>
-                        </TouchableOpacity>
-          
-                  )
-              })
-            }
-            </ScrollView>
-
+            <View>
+                <ScrollView style={{marginTop: 40}}>
+                  <View style={{flexDirection:'row', flexWrap:"wrap"}}>
+                    {/* On the home page, list out all of the users lists */}   
+                    {lists.map((list) => {
+                      return (
+                  
+                              <TouchableOpacity key={list.idlists} onPress={() => selectList(list)}>
+                                  <ListPreview name={list.name}/>
+                                </TouchableOpacity>
+                  
+                          )
+                      })
+                    }
+                  </View>
+                </ScrollView>
+            </View>
           </View>
         </View>
 

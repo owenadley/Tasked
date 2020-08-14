@@ -131,7 +131,7 @@ function App() {
     <AuthContext.Provider value={authContext}>
        <Provider store={store}>
          <NavigationContainer>
-          <Stack.Navigator initialRouteName="SignIn">
+          <Stack.Navigator initialRouteName="SignIn" screenOptions={{headerShown: false}}>
 
             {loginState.userToken !== null ? (
 
