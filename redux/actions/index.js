@@ -1,11 +1,6 @@
-export const increment = (num) => {
+export const storeTok = () => {
     return {
-        type: 'INCREMENT',
-        payload: num
-    };
-}
-export const decrement = () => {
-    return {
-        type: 'DECREMENT'
-    };
+        type: 'TOKEN',
+        playload: tok
+    }
 }

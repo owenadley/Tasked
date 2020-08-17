@@ -22,9 +22,12 @@ import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HomeNav from './components/HomeNav'
 
+import { useSelector, useDispatch } from "react-redux";
+
 
 const store = createStore(reducers);
 const Stack = createStackNavigator();    
+
 
 function App() {
 
@@ -140,15 +143,10 @@ function App() {
 
         };
 
-
-
      } catch(e) {
        console.log(e)
      }
 
-      console.log('test');
-
-     
 
       dispatch({type: 'REGISTER', id: userEmail, token: userToken})
 

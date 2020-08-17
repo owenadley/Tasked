@@ -15,77 +15,68 @@ import SignOut from './SignOut'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Header from './Header';
 
+import { useSelector, useDispatch } from 'react-redux';
+
 
 function Home(props) {
 
     const [name, setName] = useState('');
     const [lists, setLists] = useState([]);
-    const [user, setUser] = useState({});
     const Drawer = createDrawerNavigator();
-    
-
+  
+    const tok = useSelector(state => state.tok)
+    //const dispatch = useDispatch();
+    console.log('================= REDUX ===================')
+    console.log(tok)
 
     useEffect(() => {
-      getLists();
-      getUser();
+
+        getLists();        
+
     }, []);
 
-    const getUser = async () => {
-      try {
-        const value = await AsyncStorage.getItem('userToken');
-        if (value !== null) {
-          // We have data!! 
-          let jsonUser = JSON.parse(value);
-          setUser(jsonUser.data)
-        }
-      } catch (error) {
-        // Error retrieving data
-      }
-    };
-    
+    // get the lists of the current user
     const getLists = () => {
-      console.log(user.idusers)
-      fetch(`http://localhost:5000/getLists/?idusers=${user.idusers}`)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        setLists(responseJson.lists)
-      })
-      .catch((error) => {
-        console.log(error); 
+      AsyncStorage.getItem('userToken', (err, res) => {
+        fetch(`http://localhost:5000/getLists/?idusers=${JSON.parse(res).data.idusers}`)
+        .then((response) => response.json())
+        .then((responseJson) => {
+          setName(JSON.parse(res).data.fname)
+          setLists(responseJson.lists)
+        })
+        .catch((error) => {
+          console.log(error); 
+        })
       })
     } 
 
+    // navigate to createList
     const createNewList = () => {
         let updateLists = getLists;
         props.navigation.navigate('NewList', {updateLists: updateLists});
     }
 
+    // navigate to List
     const selectList = (list) => {
         props.navigation.navigate('List', {list: list})
     }
 
     return (
 
-        <View style={{flex:1, backgroundColor:'#ecf0f1'}}>
+        <View style={{flex:1, backgroundColor:'#ecf0f1', padding: 20}}>
 
-          <View style={{
-            padding: 20,
-          }}>
                 
-
           <Header 
             navigation={props.navigation} 
             iname="bars" 
             nHandler={props.navigation.openDrawer} 
             pHandler={createNewList}/>
 
-
-     
           <View style={{display: "flex", flexDirection: "column"}}>
-            <Text style={{fontSize: 30}}>Hi, {user.fname}</Text>
+            <Text style={{fontSize: 30}}>Hi, {name}</Text>
           </View>
-            
-      
+
+          {lists.length > 0 ?
 
             <View>
                 <ScrollView style={{marginTop: 40}}>
@@ -104,13 +95,19 @@ function Home(props) {
                   </View>
                 </ScrollView>
             </View>
-          </View>
+
+          :
+
+            <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+              <Text>You have no tasks, create one!</Text>
+            </View>
+
+          }
+
+  
         </View>
 
-    );
-  
-      
-    
-    }
+    )
+  }
 
 export default Home;

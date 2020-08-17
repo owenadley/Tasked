@@ -31,8 +31,6 @@ class List extends React.Component {
     componentDidMount() {
         this.getListItems();
         this.getUser();
-
-
     }
 
     getUser = async () => {
@@ -51,7 +49,7 @@ class List extends React.Component {
     
     getListItems = () => {
         console.log('userid: ' + this.state.user.idusers)
-        fetch(`http://localhost:5000/getListItems/?idusers='1'&idlists=${this.props.route.params.list.idlists}`)
+        fetch(`http://localhost:5000/getListItems/?idusers=${this.state.user.idusers}&idlists=${this.props.route.params.list.idlists}`)
         .then((response) => response.json())
         .then((responseJson) => {
             
@@ -199,42 +197,49 @@ class List extends React.Component {
 
                 </View>
 
-                <ScrollView style={{display: 'flex', margin: 10, alignContent: 'center', flexDirection:'column'}}>
-                {this.state.incompleteListItems.map((items) => {
-                    return (
-                            <View key={items.idlistitems} style={{display:'flex', flexDirection:'row'}}>
-                                <CheckBox 
-                                    containerStyle={{backgroundColor: '#ecf0f1'}}
-                                    center 
-                                    title={items.title} 
-                                    checked={Boolean(items.completed)}
-                                    onPress={() => this.toggleCheckbox(items.idlistitems, items.completed)}
-                                />
-                            </View>
-                
-                        )
-                    })
-                }
+                {this.state.incompleteListItems.length > 0 || this.state.completedListItems.length > 0 ?
+                    <ScrollView style={{display: 'flex', margin: 10, alignContent: 'center', flexDirection:'column'}}>
+                    {this.state.incompleteListItems.map((items) => {
+                        return (
+                                <View key={items.idlistitems} style={{display:'flex', flexDirection:'row'}}>
+                                    <CheckBox 
+                                        containerStyle={{backgroundColor: '#ecf0f1'}}
+                                        center 
+                                        title={items.title} 
+                                        checked={Boolean(items.completed)}
+                                        onPress={() => this.toggleCheckbox(items.idlistitems, items.completed)}
+                                    />
+                                </View>
+                    
+                            )
+                        })
+                    }
 
-                {this.state.completedListItems.map((items) => {
-                    return (
-                            <View key={items.idlistitems} style={{display:'flex', flexDirection:'row'}}>
-                                <CheckBox 
-                                    containerStyle={{backgroundColor: '#ecf0f1'}}
-                                    center 
-                                    title={items.title} 
-                                    checkedColor='#44bd32'
-                                    textStyle={{textDecorationLine:'line-through', color:'grey'}}
-                                    checked={Boolean(items.completed)}
-                                    onPress={() => this.toggleCheckbox(items.idlistitems, items.completed)}
-                                />
-                            </View>
-                
-                        )
-                    })
-                }
+                    {this.state.completedListItems.map((items) => {
+                        return (
+                                <View key={items.idlistitems} style={{display:'flex', flexDirection:'row'}}>
+                                    <CheckBox 
+                                        containerStyle={{backgroundColor: '#ecf0f1'}}
+                                        center 
+                                        title={items.title} 
+                                        checkedColor='#44bd32'
+                                        textStyle={{textDecorationLine:'line-through', color:'grey'}}
+                                        checked={Boolean(items.completed)}
+                                        onPress={() => this.toggleCheckbox(items.idlistitems, items.completed)}
+                                    />
+                                </View>
+                    
+                            )
+                        })
+                    }
 
-                </ScrollView>
+                    </ScrollView>
+                
+                :
+                
+                    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}><Text>No list items</Text></View>
+                    
+                }
 
             </View>              
         )
