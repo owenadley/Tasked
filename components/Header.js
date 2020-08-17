@@ -28,19 +28,24 @@ function Header(props) {
             <TouchableOpacity onPress={props.nHandler}>
                 <Icon name={props.iname} size={30} color='#000'/>
             </TouchableOpacity>
-            <TouchableOpacity style={{
+            
+            {props.pHandler !== null ?
+                <TouchableOpacity style={{
                 height: 40,
                 width: 70,
                 borderRadius: 10,
                 backgroundColor: '#44bd32',
                 justifyContent: 'center',
                 alignItems: 'center'
-            }}
-            onPress={props.pHandler}>
+                }}
+                onPress={props.pHandler}>
 
-            <Icon name='plus' size={20} color='white'/>
+                    <Icon name='plus' size={20} color='white'/>
 
-            </TouchableOpacity>
+                </TouchableOpacity>
+            :
+                <></>
+            }
         </View>
 
     )

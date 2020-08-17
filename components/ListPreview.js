@@ -14,10 +14,12 @@ export default function ListPreview(props) {
                 borderWidth: 0,
                 borderColor: '#000',
                 borderRadius: 5,
-                padding: 10,
+                padding: 20,
                 margin: 20,
                 backgroundColor: '#fff',
-                elevation:20
+                elevation:20,
+                justifyContent:'center',
+                alignItems:'center'
             }}>  
             <Text style={{fontSize: 18}}>{props.name}</Text>
         </View>

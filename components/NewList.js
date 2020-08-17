@@ -9,8 +9,10 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
-
+import Button from './Button'
+import Header from './Header'
 
 
 function NewList(props) {
@@ -35,14 +37,31 @@ function NewList(props) {
     }
 
     return (
-        <View style={{borderWidth: 2, borderColor: 'green'}}>
+        <View style={{flex: 1, padding: 20, backgroundColor: '#ecf0f1', }}>
             
-            <Text>Create New List</Text>
+            <Header 
+            navigation={props.navigation} 
+            iname="chevron-left" 
+            nHandler={props.navigation.goBack} 
+            pHandler={null}/>
 
-            <TextInput
-            onChangeText={text => setListName(text)}/>
-            
-            <TouchableOpacity onPress={createList}><Text>Create</Text></TouchableOpacity>
+            <View>
+                <Text style={{fontSize: 30}}>New List</Text>
+            </View>
+
+            <View style={{flex: 1, backgroundColor:'#ecf0f1', marginTop: 40, justifyContent:'space-around', alignItems:'center'}}>
+               
+                <View style={{padding: 20, backgroundColor:'#fff', width: Dimensions.get('window').width - 80, elevation: 17, borderRadius: 10, height: 130, justifyContent:'center'}}>
+                    <TextInput
+                    style={{backgroundColor:'#fff'}}
+                    placeholder='New list name ... '
+                    onChangeText={text => setListName(text)}/>
+                </View>
+
+                <Button clickHandler={createList} title='Create'/>
+           
+            </View>
+
             
         </View>
     )

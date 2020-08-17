@@ -16,26 +16,34 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 // input: email, password
 // if match, navigate to home and save user data to redux store
 // if no match, give error message
-function SignIn(props) {
+function Register(props) {
 
     const [email, setEmail] = useState('');
     const [pwd, setPwd] = useState('');
+    const [fname, setFname] = useState('');
 
-    const { signIn } = useContext(AuthContext)
+    const { signUp } = useContext(AuthContext)
 
-    const attemptSignIn = () => {
-        signIn(email, pwd);
+    const attemptRegister = () => {
+        signUp(fname, email, pwd);
     }
 
-    const register = () => {
-        props.navigation.navigate('Register');
-    }
 
     return (
         <View style={{flex:1, backgroundColor: '#ecf0f1', padding: 20, flexDirection:'column', justifyContent:'space-around', alignItems:'center'}}>
-            <Text style={{fontSize: 40, fontFamily:'Alata-Regular'}}>Tasked</Text>
+            <Text style={{fontSize: 40, fontFamily:'Alata-Regular'}}>Register</Text>
            
            <View style={{}}>
+
+                <View style={{ backgroundColor:'#fff', width: Dimensions.get('window').width - 50, padding: 20, paddingBottom: 0, borderRadius: 10, alignItems:'center'}}>
+                    <Input  
+                        placeholder="First Name" 
+                        leftIcon={<Icon name='envelope' size={20} color='#44bd32'/>}
+                        errorStyle={{ color: 'red' }} 
+                        errorMessage=''
+                        onChangeText={value => setFname(value)}/>
+                </View>
+
                 <View style={{ backgroundColor:'#fff', width: Dimensions.get('window').width - 50, padding: 20, paddingBottom: 0, borderRadius: 10, alignItems:'center'}}>
                     <Input  
                         placeholder="Your Email" 
@@ -56,18 +64,12 @@ function SignIn(props) {
             </View>
 
             <View>
-                <Button clickHandler={attemptSignIn} title='Sign In'/>   
+                <Button clickHandler={attemptRegister} title='Register'/>   
             </View>
 
-            <View>
-                <Text>Don't have an account?</Text>
-                <TouchableOpacity style={{alignItems:'center'}} onPress={register}>
-                    <Text style={{color:'#44bd32', fontWeight:'bold'}}>REGISTER</Text>
-                </TouchableOpacity>
-            </View>
         </View>
     )
 
 }
 
-export default SignIn
+export default Register

@@ -12,6 +12,7 @@ import NewList from './components/NewList';
 import List from './components/List';
 import Home from './components/Home';
 import SignIn from './components/SignIn';
+import Register from './components/Register';
 
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
@@ -20,6 +21,7 @@ import { AuthContext } from './components/context'
 import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HomeNav from './components/HomeNav'
+
 
 const store = createStore(reducers);
 const Stack = createStackNavigator();    
@@ -72,9 +74,9 @@ function App() {
       let userToken;
       userToken = null;
 
-      let userVerify = await fetch(`http://localhost:5000/verifyUser?email='${userEmail}'&pwd='${password}'`);
-      let userData = await userVerify.json();
-      
+      let userVerify = await fetch(`http://localhost:5000/verifyUser?email='${userEmail}'&pwd='${password}'`).catch(e => { throw e });
+      let userData = await userVerify.json();  
+
       if (Object.keys(userData).length > 0) {
         try {
           userToken = JSON.stringify(userData)  // fetch token from DB
@@ -100,7 +102,56 @@ function App() {
 
     },
 
-    signUp: () => {
+    signUp: async(fName, userEmail, password) => {
+
+      let userToken;
+      userToken = null;
+
+      const settings = {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+      };
+
+      try {
+        
+        let registerUser = await fetch(`http://localhost:5000/registerUser?fname='${fName}'&email='${userEmail}'&pwd='${password}'`, settings);
+        let doRegister = await registerUser.json();
+       
+        if (doRegister.success) {
+
+          let userVerify = await fetch(`http://localhost:5000/verifyUser?email='${userEmail}'&pwd='${password}'`);
+          let userData = await userVerify.json();  
+    
+          if (Object.keys(userData).length > 0) {
+            try {
+              userToken = JSON.stringify(userData)  // fetch token from DB
+              await AsyncStorage.setItem('userToken', userToken)
+              
+            } catch(e) {
+              console.log(e);
+            }
+          } else {
+            console.log('invalid credentials')
+          }
+
+
+        };
+
+
+
+     } catch(e) {
+       console.log(e)
+     }
+
+      console.log('test');
+
+     
+
+      dispatch({type: 'REGISTER', id: userEmail, token: userToken})
+
 
     }
   }), [])
@@ -140,13 +191,17 @@ function App() {
                 <Stack.Screen name="HomeNav" component={HomeNav} />            
                 <Stack.Screen name="NewList" component={NewList}/>
                 <Stack.Screen name="List" component={List}/>
+                
         
             </>
 
             ) : ( 
 
             <>
+
               <Stack.Screen name="SignIn" component={SignIn}/>
+              <Stack.Screen name="Register" component={Register}/>
+
             </>
 
             )}

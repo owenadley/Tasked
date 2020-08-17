@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Button
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListPreview from './ListPreview';
@@ -19,27 +20,32 @@ function Home(props) {
 
     const [name, setName] = useState('');
     const [lists, setLists] = useState([]);
+    const [user, setUser] = useState({});
     const Drawer = createDrawerNavigator();
+    
 
 
     useEffect(() => {
       getLists();
-      getUserName();
+      getUser();
     }, []);
 
-    const getUserName = () => {
-      fetch('http://localhost:5000/getUserName')
-        .then((response) => response.json())
-        .then((responseJson) => {
-          setName(responseJson.data.fname)
-        })
-        .catch((error) => {
-          console.log(error);
-        })
+    const getUser = async () => {
+      try {
+        const value = await AsyncStorage.getItem('userToken');
+        if (value !== null) {
+          // We have data!! 
+          let jsonUser = JSON.parse(value);
+          setUser(jsonUser.data)
+        }
+      } catch (error) {
+        // Error retrieving data
+      }
     };
     
     const getLists = () => {
-      fetch(`http://localhost:5000/getLists/?idusers=1`)
+      console.log(user.idusers)
+      fetch(`http://localhost:5000/getLists/?idusers=${user.idusers}`)
       .then((response) => response.json())
       .then((responseJson) => {
         setLists(responseJson.lists)
@@ -76,7 +82,7 @@ function Home(props) {
 
      
           <View style={{display: "flex", flexDirection: "column"}}>
-            <Text style={{fontSize: 30}}>Hi, {name}</Text>
+            <Text style={{fontSize: 30}}>Hi, {user.fname}</Text>
           </View>
             
       
@@ -88,9 +94,9 @@ function Home(props) {
                     {lists.map((list) => {
                       return (
                   
-                              <TouchableOpacity key={list.idlists} onPress={() => selectList(list)}>
-                                  <ListPreview name={list.name}/>
-                                </TouchableOpacity>
+                          <TouchableOpacity key={list.idlists} onPress={() => selectList(list)}>
+                              <ListPreview name={list.name}/>
+                            </TouchableOpacity>
                   
                           )
                       })

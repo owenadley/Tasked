@@ -9,6 +9,7 @@ import {
   ScrollView
 
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {CheckBox} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -22,17 +23,35 @@ class List extends React.Component {
             completedListItems: [],
             incompleteListItems: [],
             newListItem: false,
-            newListItemName: ''
+            newListItemName: '',
+            user: {}
         }
-
     }
 
     componentDidMount() {
         this.getListItems();
+        this.getUser();
+
+
     }
 
+    getUser = async () => {
+      try {
+        const value = await AsyncStorage.getItem('userToken');
+        if (value !== null) {
+          // We have data!! 
+          let jsonUser = JSON.parse(value);
+          console.log(jsonUser.data)
+          this.setState({user: jsonUser.data})
+        }
+      } catch (error) {
+        // Error retrieving data
+      }
+    };
+    
     getListItems = () => {
-        fetch(`http://localhost:5000/getListItems/?idusers=1&idlists=${this.props.route.params.list.idlists}`)
+        console.log('userid: ' + this.state.user.idusers)
+        fetch(`http://localhost:5000/getListItems/?idusers='1'&idlists=${this.props.route.params.list.idlists}`)
         .then((response) => response.json())
         .then((responseJson) => {
             
@@ -58,7 +77,7 @@ class List extends React.Component {
     }
 
     submitNewListItem = () => {
-        fetch(`http://localhost:5000/createNewListItem/?title=${this.state.newListItemName}&idusers=1&idlists=${this.props.route.params.list.idlists}`, {
+        fetch(`http://localhost:5000/createNewListItem/?title=${this.state.newListItemName}&idusers=${this.state.idusers}&idlists=${this.props.route.params.list.idlists}`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -166,10 +185,15 @@ class List extends React.Component {
                 <View>
 
                     {this.state.newListItem ?
-                        <View style={{borderWidth: 2, borderColor: 'red', padding: 20}}>
-                            <TextInput
-                            onChangeText={text => this.setListItemName(text)}/>
-                            <TouchableOpacity onPress={this.submitNewListItem}><Text>Create</Text></TouchableOpacity>
+                        <View style={{flexDirection:'row', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', elevation: 17, borderRadius: 10, height: 90, margin: 20}}>
+                            <View style={{flex:3, height: 90, padding: 20}}>                        
+                                <TextInput style={{}}
+                                placeholder='Task name ... '
+                                onChangeText={text => this.setListItemName(text)}/>          
+                            </View>
+                            <View style={{flex:1, justifyContent: 'center', alignItems: 'center', height: 90, backgroundColor:'#44bd32', borderTopRightRadius: 10, borderBottomRightRadius: 10, elevation: 17}}> 
+                                <TouchableOpacity onPress={this.submitNewListItem}><Text style={{color: '#fff'}}>Create</Text></TouchableOpacity>
+                            </View>
                         </View>
                     : null}
 
@@ -199,6 +223,8 @@ class List extends React.Component {
                                     containerStyle={{backgroundColor: '#ecf0f1'}}
                                     center 
                                     title={items.title} 
+                                    checkedColor='#44bd32'
+                                    textStyle={{textDecorationLine:'line-through', color:'grey'}}
                                     checked={Boolean(items.completed)}
                                     onPress={() => this.toggleCheckbox(items.idlistitems, items.completed)}
                                 />
