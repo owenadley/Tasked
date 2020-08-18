@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,29 +14,31 @@ import {
 import Button from './Button'
 import Header from './Header'
 import AsyncStorage from '@react-native-community/async-storage';
+import {AuthContext} from './context';
 
 
 function NewList(props) {
 
     const [listName, setListName] = useState(0);
-
+    const userToken = useContext(AuthContext)
+    const user = userToken.userTok
 
     const createList = () => {
-        AsyncStorage.getItem('userToken', (err, res) => {        
-            fetch(`http://localhost:5000/createList/?idusers=${JSON.parse(res).data.idusers}&listname=${listName}`, {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(
-                props.route.params.updateLists(),
-                props.navigation.goBack())
-            .catch((error) => {
-            console.log(error);
-            })
+      
+        fetch(`http://localhost:5000/createList/?idusers=${user.idusers}&listname=${listName}`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
         })
+        .then(
+            props.route.params.updateLists(),
+            props.navigation.goBack())
+        .catch((error) => {
+        console.log(error);
+        })
+    
     }
 
     return (

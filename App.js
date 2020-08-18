@@ -22,14 +22,16 @@ import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HomeNav from './components/HomeNav'
 
+import { storeTok } from './redux/actions'
 import { useSelector, useDispatch } from "react-redux";
 
 
-const store = createStore(reducers);
 const Stack = createStackNavigator();    
-
+const store = createStore(reducers);
 
 function App() {
+
+  const [userTok, setUserTok] = useState('')
 
   const initialLoginState = {
     isLoading: true,
@@ -151,18 +153,35 @@ function App() {
       dispatch({type: 'REGISTER', id: userEmail, token: userToken})
 
 
+    },
+    getTok: async() => {
+      let userToken = ''
+      try {
+        userToken = await AsyncStorage.getItem('userToken');
+        return
+
+      } catch(e) {
+        console.log(e);
+      }
+
+      return userToken
+
     }
   }), [])
 
   useEffect(() => {
     setTimeout(async() => {
       let userToken;
-      userToken = null;
       try {
+
         userToken = await AsyncStorage.getItem('userToken');
+        console.log(JSON.parse(userToken).data)
+        setUserTok(JSON.parse(userToken).data)
+
       } catch(e) {
         console.log(e);
       }
+
       dispatch({type: 'RETRIEVE_TOKEN', token: userToken})
     }, 1000)
   }, []);
@@ -177,7 +196,7 @@ function App() {
 
 
   return (
-    <AuthContext.Provider value={authContext}>
+    <AuthContext.Provider value={{authContext, userTok}}>
        <Provider store={store}>
          <NavigationContainer>
           <Stack.Navigator initialRouteName="SignIn" screenOptions={{headerShown: false}}>

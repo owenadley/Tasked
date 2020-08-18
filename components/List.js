@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, {useContext} from 'react';
 import {
 
   Text,
@@ -14,8 +14,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {CheckBox} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Header from './Header';
+import {AuthContext} from './context';
 
 class List extends React.Component {
+
+    static contextType = AuthContext;
 
     constructor(props) {
         super(props);
@@ -24,32 +27,17 @@ class List extends React.Component {
             incompleteListItems: [],
             newListItem: false,
             newListItemName: '',
-            user: {}
+            user: 'user'
         }
     }
 
     componentDidMount() {
         this.getListItems();
-        this.getUser();
     }
 
-    getUser = async () => {
-      try {
-        const value = await AsyncStorage.getItem('userToken');
-        if (value !== null) {
-          // We have data!! 
-          let jsonUser = JSON.parse(value);
-          console.log(jsonUser.data)
-          this.setState({user: jsonUser.data})
-        }
-      } catch (error) {
-        // Error retrieving data
-      }
-    };
     
     getListItems = () => {
-        console.log('userid: ' + this.state.user.idusers)
-        fetch(`http://localhost:5000/getListItems/?idusers=${this.state.user.idusers}&idlists=${this.props.route.params.list.idlists}`)
+        fetch(`http://localhost:5000/getListItems/?idusers=${this.context.userTok.idusers}&idlists=${this.props.route.params.list.idlists}`)
         .then((response) => response.json())
         .then((responseJson) => {
             
@@ -75,7 +63,7 @@ class List extends React.Component {
     }
 
     submitNewListItem = () => {
-        fetch(`http://localhost:5000/createNewListItem/?title=${this.state.newListItemName}&idusers=${this.state.idusers}&idlists=${this.props.route.params.list.idlists}`, {
+        fetch(`http://localhost:5000/createNewListItem/?title=${this.state.newListItemName}&idusers=${this.context.userTok.idusers}&idlists=${this.props.route.params.list.idlists}`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',

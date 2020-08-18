@@ -1,5 +1,5 @@
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   ScrollView,
   View,
@@ -8,40 +8,26 @@ import {
   Button
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-
-import Icon from 'react-native-vector-icons/FontAwesome';
 import ListPreview from './ListPreview';
-import SignOut from './SignOut'
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import Header from './Header';
-
-import { useSelector, useDispatch } from 'react-redux';
-
+import {AuthContext} from './context';
 
 function Home(props) {
 
-    const [name, setName] = useState('');
     const [lists, setLists] = useState([]);
-    const Drawer = createDrawerNavigator();
-  
-    const tok = useSelector(state => state.tok)
-    //const dispatch = useDispatch();
-    console.log('================= REDUX ===================')
-    console.log(tok)
+    const userToken = useContext(AuthContext)
+    const user = userToken.userTok
 
     useEffect(() => {
-
         getLists();        
-
     }, []);
 
     // get the lists of the current user
     const getLists = () => {
       AsyncStorage.getItem('userToken', (err, res) => {
-        fetch(`http://localhost:5000/getLists/?idusers=${JSON.parse(res).data.idusers}`)
+        fetch(`http://localhost:5000/getLists/?idusers=${user.idusers}`)
         .then((response) => response.json())
         .then((responseJson) => {
-          setName(JSON.parse(res).data.fname)
           setLists(responseJson.lists)
         })
         .catch((error) => {
@@ -73,7 +59,7 @@ function Home(props) {
             pHandler={createNewList}/>
 
           <View style={{display: "flex", flexDirection: "column"}}>
-            <Text style={{fontSize: 30}}>Hi, {name}</Text>
+            <Text style={{fontSize: 30}}>Hi, {user.fname}</Text>
           </View>
 
           {lists.length > 0 ?
