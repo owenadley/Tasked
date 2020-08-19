@@ -13,6 +13,7 @@ import List from './components/List';
 import Home from './components/Home';
 import SignIn from './components/SignIn';
 import Register from './components/Register';
+import ListSettings from './components/ListSettings';
 
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
@@ -76,6 +77,8 @@ function App() {
   const authContext = useMemo(() => ({
     signIn: async(userEmail, password) => {
 
+      console.log('hello world')
+
       let userToken;
       userToken = null;
 
@@ -97,6 +100,8 @@ function App() {
     },
 
     signOut: async() => {
+
+      console.log('here beer');
 
       try {
         userToken = await AsyncStorage.removeItem('userToken')
@@ -141,30 +146,13 @@ function App() {
           } else {
             console.log('invalid credentials')
           }
-
-
         };
 
      } catch(e) {
        console.log(e)
      }
 
-
       dispatch({type: 'REGISTER', id: userEmail, token: userToken})
-
-
-    },
-    getTok: async() => {
-      let userToken = ''
-      try {
-        userToken = await AsyncStorage.getItem('userToken');
-        return
-
-      } catch(e) {
-        console.log(e);
-      }
-
-      return userToken
 
     }
   }), [])
@@ -175,8 +163,9 @@ function App() {
       try {
 
         userToken = await AsyncStorage.getItem('userToken');
-        console.log(JSON.parse(userToken).data)
-        setUserTok(JSON.parse(userToken).data)
+        if (userToken !== null) {
+          setUserTok(JSON.parse(userToken).data)
+        }
 
       } catch(e) {
         console.log(e);
@@ -193,8 +182,6 @@ function App() {
     )
   }
 
-
-
   return (
     <AuthContext.Provider value={{authContext, userTok}}>
        <Provider store={store}>
@@ -208,7 +195,7 @@ function App() {
                 <Stack.Screen name="HomeNav" component={HomeNav} />            
                 <Stack.Screen name="NewList" component={NewList}/>
                 <Stack.Screen name="List" component={List}/>
-                
+                <Stack.Screen name="ListSettings" component={ListSettings}/>
         
             </>
 
@@ -222,7 +209,6 @@ function App() {
             </>
 
             )}
-
 
           </Stack.Navigator>
         </NavigationContainer>   

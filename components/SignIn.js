@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Dimensions
 } from 'react-native';
-import { Hoshi } from 'react-native-textinput-effects';
 
 import { AuthContext } from './context'
 import Button from './Button';
@@ -21,7 +20,8 @@ function SignIn(props) {
     const [email, setEmail] = useState('');
     const [pwd, setPwd] = useState('');
 
-    const { signIn } = useContext(AuthContext)
+    const context = useContext(AuthContext)
+    const {signIn} = context.authContext;
 
     const attemptSignIn = () => {
         signIn(email, pwd);

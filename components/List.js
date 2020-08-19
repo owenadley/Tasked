@@ -15,6 +15,7 @@ import {CheckBox} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Header from './Header';
 import {AuthContext} from './context';
+import ButtonAdd from './ButtonAdd';
 
 class List extends React.Component {
 
@@ -143,30 +144,26 @@ class List extends React.Component {
 
     }
 
+
+    listSettings = () => {
+        this.props.navigation.navigate('ListSettings',  {idlists: this.props.route.params.list.idlists})
+    }
+
     render() {
 
         return (
 
-            <View style={{flex: 1, backgroundColor:'#ecf0f1'}}>
-              <View style={{
-                padding: 20,
-              }}>
+            <View style={{flex: 1, backgroundColor:'#ecf0f1', padding:20}}>
 
-                <Header navigation={this.props.navigation} iname="chevron-left" nHandler={this.props.navigation.goBack} pHandler={this.createNewListItem}/>
-
-                <View style={{
-                    display: "flex", 
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                    }}>
-        
-                    <View style={{display: "flex", flexDirection: "column"}}>
-                        <Text style={{fontSize: 30}}>{this.props.route.params.list.name}</Text>
-                    </View>
-                    
-                </View>
-    
-              </View>
+                <ButtonAdd btnHandler={this.createNewListItem}/>
+                <Header 
+                    navigation={this.props.navigation} 
+                    lName="chevron-left" 
+                    lHandler={this.props.navigation.goBack}
+                    rName="cog"
+                    rHandler={this.listSettings}
+                    title={this.props.route.params.list.name}
+                    />
 
                 <View>
 

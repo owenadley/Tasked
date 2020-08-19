@@ -7,7 +7,9 @@ import { AuthContext } from './context'
 
 function HomeNav(props) {
 
-    const { signOut } = useContext(AuthContext);
+    const context = useContext(AuthContext);
+    const { signOut } = context.authContext;
+
     const Drawer = createDrawerNavigator();
 
     return (

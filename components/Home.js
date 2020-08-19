@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import ListPreview from './ListPreview';
 import Header from './Header';
 import {AuthContext} from './context';
+import ButtonAdd from './ButtonAdd';
 
 function Home(props) {
 
@@ -19,6 +20,7 @@ function Home(props) {
     const user = userToken.userTok
 
     useEffect(() => {
+
         getLists();        
     }, []);
 
@@ -51,21 +53,18 @@ function Home(props) {
 
         <View style={{flex:1, backgroundColor:'#ecf0f1', padding: 20}}>
 
-                
+          <ButtonAdd btnHandler={createNewList}/>
           <Header 
             navigation={props.navigation} 
-            iname="bars" 
-            nHandler={props.navigation.openDrawer} 
-            pHandler={createNewList}/>
-
-          <View style={{display: "flex", flexDirection: "column"}}>
-            <Text style={{fontSize: 30}}>Hi, {user.fname}</Text>
-          </View>
+            lName="bars" 
+            lHandler={props.navigation.openDrawer} 
+            title={"Hi, " + user.fname}
+          />
 
           {lists.length > 0 ?
 
             <View>
-                <ScrollView style={{marginTop: 40}}>
+                <ScrollView style={{marginTop: 20}}>
                   <View style={{flexDirection:'row', flexWrap:"wrap"}}>
                     {/* On the home page, list out all of the users lists */}   
                     {lists.map((list) => {

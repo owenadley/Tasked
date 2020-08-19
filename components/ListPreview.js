@@ -17,7 +17,7 @@ export default function ListPreview(props) {
                 padding: 20,
                 margin: 20,
                 backgroundColor: '#fff',
-                elevation:20,
+                elevation:10,
                 justifyContent:'center',
                 alignItems:'center'
             }}>  
