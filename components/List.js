@@ -28,7 +28,8 @@ class List extends React.Component {
             incompleteListItems: [],
             newListItem: false,
             newListItemName: '',
-            user: 'user'
+            user: 'user',
+            listName: props.route.params.list.name
         }
     }
 
@@ -82,6 +83,11 @@ class List extends React.Component {
 
     createNewListItem = () => {
         this.setState({newListItem: true})
+    }
+
+    updateListName = (name) => {
+        this.setState({listName: name})
+        this.props.route.params.updateLists();
     }
 
 
@@ -144,9 +150,8 @@ class List extends React.Component {
 
     }
 
-
     listSettings = () => {
-        this.props.navigation.navigate('ListSettings',  {idlists: this.props.route.params.list.idlists})
+        this.props.navigation.navigate('ListSettings',  {updateLists: this.updateListName, idlists: this.props.route.params.list.idlists, name: this.props.route.params.list.name})
     }
 
     render() {
@@ -162,7 +167,7 @@ class List extends React.Component {
                     lHandler={this.props.navigation.goBack}
                     rName="cog"
                     rHandler={this.listSettings}
-                    title={this.props.route.params.list.name}
+                    title={this.state.listName}
                     />
 
                 <View>

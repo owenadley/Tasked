@@ -16,11 +16,12 @@ import ButtonAdd from './ButtonAdd';
 function Home(props) {
 
     const [lists, setLists] = useState([]);
+    const [listView, setListView] = useState(true);
+
     const userToken = useContext(AuthContext)
     const user = userToken.userTok
 
     useEffect(() => {
-
         getLists();        
     }, []);
 
@@ -46,7 +47,14 @@ function Home(props) {
 
     // navigate to List
     const selectList = (list) => {
-        props.navigation.navigate('List', {list: list})
+        let updateLists = getLists;      
+        props.navigation.navigate('List', {list: list, updateLists: updateLists})
+    }
+
+    const toggleListView = (view) => {
+      // if view is false, we will display dailyView
+      // if view is true, we will display listView
+      setListView(view);
     }
 
     return (
@@ -59,34 +67,47 @@ function Home(props) {
             lName="bars" 
             lHandler={props.navigation.openDrawer} 
             title={"Hi, " + user.fname}
+            toggleView={toggleListView}
+            selectedView={listView}
           />
 
-          {lists.length > 0 ?
+          {listView==true ?
+              lists.length > 0 ?
 
-            <View>
-                <ScrollView style={{marginTop: 20}}>
-                  <View style={{flexDirection:'row', flexWrap:"wrap"}}>
-                    {/* On the home page, list out all of the users lists */}   
-                    {lists.map((list) => {
-                      return (
-                  
-                          <TouchableOpacity key={list.idlists} onPress={() => selectList(list)}>
-                              <ListPreview name={list.name}/>
-                            </TouchableOpacity>
-                  
-                          )
-                      })
-                    }
-                  </View>
-                </ScrollView>
-            </View>
+              <View>
+                  <ScrollView style={{marginTop: 20}}>
+                    <View style={{flexDirection:'row', flexWrap:"wrap"}}>
+                      {/* On the home page, list out all of the users lists */}   
+                      {lists.map((list) => {
+                        return (
+                    
+                            <TouchableOpacity key={list.idlists} onPress={() => selectList(list)}>
+                                <ListPreview name={list.name}/>
+                              </TouchableOpacity>
+                    
+                            )
+                        })
+                      }
+                    </View>
+                  </ScrollView>
+              </View>
 
+              :
+
+              <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                <Text>You have no tasks, create one!</Text>
+              </View>
+          
           :
 
-            <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-              <Text>You have no tasks, create one!</Text>
-            </View>
+            <View>
+              <ScrollView style={{marginTop: 20}}>
 
+                
+
+              </ScrollView>
+            </View>
+            
           }
 
   

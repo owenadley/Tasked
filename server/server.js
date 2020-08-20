@@ -20,7 +20,6 @@ if (conn.state === 'disconnected') {
 const app = express();
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
- 
 
 
 //---------------------------------------------------------
@@ -152,20 +151,33 @@ app.post('/createList', (req, res) => {
         res.json({success: 1});
     })
 })
+
 app.get('/getLists', (req, res) => {
 
     var idusers = req.param('idusers')
 
     var sql = `SELECT * FROM lists WHERE idusers=${idusers}`
-console.log(sql)
     conn.query(sql, function(err, result) {
         if (err) {
             throw err;
         };
-        console.log(result)
         var lists = result;
   
         return res.json({lists: lists})
     })
 })
 
+app.post('/updateList', (req, res) => {
+
+    var listName = req.param('listname')
+    var idlists = req.param('idlists')
+    
+    var sql = `UPDATE lists SET name ='${listName}' WHERE idlists = ${idlists}`
+    console.log(sql)
+    conn.query(sql, function(err, result) {
+        if (err) {
+            throw err;
+        };
+        res.json({success: 1});
+    })
+})
