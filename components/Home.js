@@ -60,8 +60,10 @@ function Home(props) {
     return (
 
         <View style={{flex:1, backgroundColor:'#ecf0f1', padding: 20}}>
-
-          <ButtonAdd btnHandler={createNewList}/>
+            
+            <View style={{flex:1, flexDirection:'row', zIndex:1, backgroundColor:'transparent', elevation:100, position:'absolute', bottom: 20, right:0, justifyContent:'flex-start'}}>
+              <ButtonAdd btnHandler={createNewList}/>
+            </View>
           <Header 
             navigation={props.navigation} 
             lName="bars" 

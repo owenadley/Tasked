@@ -181,3 +181,33 @@ app.post('/updateList', (req, res) => {
         res.json({success: 1});
     })
 })
+
+app.post('/deleteList', (req, res) => {
+
+    var idlists = req.param('idlists')
+    
+    var sql = `DELETE FROM lists WHERE idlists=${idlists}`
+    console.log(sql)
+    conn.query(sql, function(err, result) {
+        if (err) {
+            throw err;
+        };
+        res.json({success: 1});
+    })
+})
+
+app.post('/deleteListItem', (req, res) => {
+
+    var idlistitems = req.param('idlistitems')
+    
+    var sql = `DELETE FROM listitems WHERE idlistitems=${idlistitems}`
+    console.log(sql)
+    conn.query(sql, function(err, result) {
+        if (err) {
+            throw err;
+        };
+        res.json({success: 1});
+    })
+})
+
+

@@ -7,7 +7,7 @@ function ButtonAdd(props) {
 
     return (
 
-        <View style={{zIndex:1, backgroundColor:'transparent', elevation: 100, width: 90, height: 90, margin:0, position:'absolute', bottom:20, right: 10}}>
+        <View style={{marginLeft:20, width: 90, height: 90, margin:0}}>
             <TouchableOpacity style={{
                 zIndex:1,
                 height: 70,

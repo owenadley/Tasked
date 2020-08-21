@@ -17,6 +17,23 @@ function ListSettings(props) {
         setEditName(!editName);
     }
 
+    const deleteList = () => {
+        fetch(`http://localhost:5000/deleteList/?idlists=${props.route.params.idlists}`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then (
+            props.route.params.updateList(),
+            props.navigation.navigate('HomeNav')
+        )
+        .catch((error) => {
+            console.log(error);
+        }) 
+    }
+
     // submit new list name
     // TODO: check to see if list name has actually changed before making a network request
     const submitListName = () => {
@@ -29,7 +46,7 @@ function ListSettings(props) {
         })
         .then(
            editListName(),
-           props.route.params.updateLists(name)
+           props.route.params.updateList(name)
         )
         .catch((error) => {
             console.log(error);
@@ -71,7 +88,7 @@ function ListSettings(props) {
 
                     </View>
 
-                    <TouchableOpacity style={{ borderWidth: 1, borderColor:'red', borderBottomLeftRadius:10, borderBottomRightRadius:10, justifyContent:'center', flexDirection:'row', padding: 20, marginTop: 'auto'}}>
+                    <TouchableOpacity onPress={deleteList} style={{ borderWidth: 1, borderColor:'red', borderBottomLeftRadius:10, borderBottomRightRadius:10, justifyContent:'center', flexDirection:'row', padding: 20, marginTop: 'auto'}}>
                             <Icon name='trash' size={25} />
                             <Text style={{marginLeft: 10, fontSize:18}}> Delete List </Text>
                     </TouchableOpacity>

@@ -40,6 +40,7 @@ function App() {
     userToken: null,
   }
 
+  // auth reducer for different auth states
   const loginReducer = (prevState, action) => {
     switch( action.type ) {
       case 'RETRIEVE_TOKEN':
@@ -74,6 +75,8 @@ function App() {
 
   const [loginState, dispatch] = useReducer(loginReducer, initialLoginState);   
 
+  // auth actions
+  // try to get userToken from async storage to determine if user need to log in or not
   const authContext = useMemo(() => ({
     signIn: async(userEmail, password) => {
 
@@ -157,6 +160,8 @@ function App() {
     }
   }), [])
 
+
+  // try to get the token while the app takes 1s to load
   useEffect(() => {
     setTimeout(async() => {
       let userToken;

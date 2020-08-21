@@ -32,6 +32,14 @@ function Header(props) {
                     <Icon name={props.lName} size={30} color='#000'/>
                 </TouchableOpacity>
                 
+                {props.midContent ?
+
+                    <Text style={{fontSize:20}}>{props.midContent}</Text>
+
+                :
+                    <></>
+                }
+
                 {props.rHandler ?
                     <TouchableOpacity style={{
 
