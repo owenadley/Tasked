@@ -20,7 +20,7 @@ function Header(props) {
 
     return (
 
-        <View style={{marginBottom:20}}>
+        <View style={{padding: 20, marginBottom:20}}>
 
             <View style={{
                 marginBottom: 20, 

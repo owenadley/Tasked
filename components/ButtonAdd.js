@@ -7,11 +7,11 @@ function ButtonAdd(props) {
 
     return (
 
-        <View style={{marginLeft:20, width: 90, height: 90, margin:0}}>
+        <View style={{marginLeft:20, marginRight: 20}}>
             <TouchableOpacity style={{
                 zIndex:1,
-                height: 70,
-                width: 70,
+                height: 40,
+                width: 40,
                 elevation: 15,
                 borderRadius: 35,
                 backgroundColor: '#44bd32',
@@ -20,7 +20,7 @@ function ButtonAdd(props) {
                 }}
                 onPress={props.btnHandler}>
 
-                    <Icon name='plus' size={30} color='white'/>
+                    <Icon name='plus' size={20} color='white'/>
 
             </TouchableOpacity>
         </View>

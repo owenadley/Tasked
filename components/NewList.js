@@ -36,7 +36,7 @@ function NewList(props) {
             props.route.params.updateLists(),
             props.navigation.goBack())
         .catch((error) => {
-        console.log(error);
+            console.log(error);
         })
     
     }
@@ -46,13 +46,9 @@ function NewList(props) {
             
             <Header 
             navigation={props.navigation} 
-            iname="chevron-left" 
-            nHandler={props.navigation.goBack} 
-            pHandler={null}/>
-
-            <View>
-                <Text style={{fontSize: 30}}>New List</Text>
-            </View>
+            lName="chevron-left" 
+            lHandler={props.navigation.goBack} 
+            title="New List"/>
 
             <View style={{flex: 1, backgroundColor:'#ecf0f1', marginTop: 40, justifyContent:'space-around', alignItems:'center'}}>
                
@@ -67,7 +63,6 @@ function NewList(props) {
            
             </View>
 
-            
         </View>
     )
     

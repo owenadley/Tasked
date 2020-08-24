@@ -1,23 +1,21 @@
 
-import React, {useContext} from 'react';
+import React from 'react';
 import {
 
   Text,
   View,
   TouchableOpacity,
-  TextInput,
   ScrollView,
   Dimensions,
   Animated
 
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
-import SvgUri from 'react-native-svg-uri';
 import {CheckBox} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Header from './Header';
 import {AuthContext} from './context';
-import ButtonAdd from './ButtonAdd';
+import EditField from './EditField';
+import NewListItem from './NewListItem';
 
 class List extends React.Component {
 
@@ -41,17 +39,16 @@ class List extends React.Component {
         this.getListItems();
     }
 
-    
-    getListItems = () => {
+    getListItems = () => {  // fetch the list items for a specific list and save it to state
         fetch(`http://localhost:5000/getListItems/?idusers=${this.context.userTok.idusers}&idlists=${this.props.route.params.list.idlists}`)
         .then((response) => response.json())
         .then((responseJson) => {
-            
+
             let completedListItems = [];
             let incompleteListItems = [];
 
             responseJson.listitems.forEach((listitem) => {
-                listitem.completed ? completedListItems.push(listitem) : incompleteListItems.push(listitem)
+                listitem.completed ? completedListItems.unshift(listitem) : incompleteListItems.push(listitem)
             })
 
             this.setState({
@@ -64,49 +61,14 @@ class List extends React.Component {
         })
     }
 
-    setListItemName = (text) => {
-        this.setState({newListItemName: text})
-    }
-
-    submitNewListItem = () => {
-        fetch(`http://localhost:5000/createNewListItem/?title=${this.state.newListItemName}&idusers=${this.context.userTok.idusers}&idlists=${this.props.route.params.list.idlists}`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(
-            this.getListItems(),
-            this.setState({newListItem: false})
-        )
-        .catch((error) => {
-          console.log(error);
-        })
-    }
-
-    createNewListItem = () => {
-
-        this.setState({newListItem: true})
-    }
-
-    updateList = (name) => {
-
+    updateList = (name) => {    // if we change any data regarding the list, we need to refresh them
         name ? this.setState({listName: name}) : null
-        this.props.route.params.updateLists();
+        this.props.route.params.updateLists();  // from Home.js, re-fetch the lists since one is updated
     }
-
 
     toggleCheckbox = (id, isComplete) => {
 
-        console.log(isComplete)
-
-        // toggle the completed property
-        // remove from current array
-        // unshift into other array
-
         if (Boolean(isComplete)) {
-
                 this.state.completedListItems.map (
                     (listitem, index) => {
                         if (listitem.idlistitems === id) {
@@ -156,7 +118,7 @@ class List extends React.Component {
 
     }
 
-    listSettings = () => {
+    listSettings = () => {  // navigate to list settings screen
         this.props.navigation.navigate('ListSettings',  
             {   updateList: this.updateList, 
                 idlists: this.props.route.params.list.idlists, 
@@ -198,6 +160,8 @@ class List extends React.Component {
         // delete the list item that was most recently set
         const { idlistitems } = this.state.selectedListItem;
 
+        console.log('here in delete')
+
         // delete the selected list item
         fetch(`http://localhost:5000/deleteListItem/?idlistitems=${idlistitems}`, {
             method: 'POST',
@@ -206,6 +170,9 @@ class List extends React.Component {
                 'Content-Type': 'application/json'
             }
         }).then(
+
+            console.log('the delete is finished'),
+
             // update the list items
             this.getListItems(),
             // close the drawer for the deleted item
@@ -214,39 +181,33 @@ class List extends React.Component {
         .catch((error) => {
           console.log(error);
         })
+    }
 
+    updateListItem = (name) => {
+        const { idlistitems } = this.state.selectedListItem;
 
+        fetch(`http://localhost:5000/updateListItem/?idlistitems=${idlistitems}&title=${name}`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(
+            this.getListItems()
+        )
+        .catch((error) => {
+            console.log(error);
+        }) 
     }
 
     render() {
 
         return (
 
-            <View style={{flex: 1, backgroundColor:'#ecf0f1', padding:20}}>
+            <View style={{flex: 1, backgroundColor:'#ecf0f1'}}>
 
-
-                <View style={{flex:1, flexDirection:'row', zIndex:1, backgroundColor:'transparent', elevation:0, position:'absolute', bottom: 20, right:0, justifyContent:'flex-start'}}>
-
-                    {this.state.newListItem ?
-                        <View style={{flex:1, flexDirection:'row', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', elevation: 10, borderRadius: 10, height: 80}}>
-                            <View style={{flex:2, height: 80, padding: 20}}>                        
-                                <TextInput style={{}} 
-                                placeholder='Task name ... '
-                                onChangeText={text => this.setListItemName(text)}/>          
-                            </View>
-
-    
-                            <TouchableOpacity onPress={this.submitNewListItem} style={{flex:1, justifyContent: 'center', alignItems: 'center', height: 80, backgroundColor:'#44bd32', borderTopRightRadius: 10, borderBottomRightRadius: 10, elevation: 10}}> 
-                                <Text style={{color: '#fff'}}>Create</Text>
-                            </TouchableOpacity>
-
-                        </View>
-                    : null}
-                  
-                    <ButtonAdd btnHandler={this.createNewListItem}/>
-                
-                </View>
-
+                <NewListItem updateList={this.getListItems} idlists={this.props.route.params.list.idlists} />
 
                 <Header 
                     navigation={this.props.navigation} 
@@ -255,15 +216,8 @@ class List extends React.Component {
                     rName="cog"
                     rHandler={this.listSettings}
                     midContent={`${this.state.completedListItems.length} / ${this.state.incompleteListItems.length + this.state.completedListItems.length}`}
-                    title={this.state.listName}
-                    
-                    />
+                    title={this.state.listName}/>
 
-                <View>
-
-
-
-                </View>
 
                 {this.state.incompleteListItems.length > 0 || this.state.completedListItems.length > 0 ?
                 <>
@@ -345,11 +299,14 @@ class List extends React.Component {
 
                             }}>
 
-                            <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:20, paddingBottom:20}}>
-                                <Text style={{fontSize:25, fontFamily:'Alata-Regular'}}>{this.state.selectedListItem.title}</Text>
+                            <View style={{alignSelf:'flex-end', marginBottom:20, paddingBottom:20}}>
                                 <TouchableOpacity onPress={this.closeListItemDrawer}>
                                     <Icon style={{}} name='chevron-down' size={25}/>
                                 </TouchableOpacity>                                
+                            </View>
+
+                            <View>
+                                <EditField value={this.state.selectedListItem.title} callback={this.updateListItem} />
                             </View>
 
                             <View style={{flex: 1, flexDirection:'column', alignItems:'center'}}>
@@ -360,12 +317,7 @@ class List extends React.Component {
                                             <Text style={{marginLeft: 10, fontSize:18}}> Delete Item</Text>
                                         </View>                                
                                    </TouchableOpacity>
-
                             </View>
-                            
-
-
-
                         </Animated.View>
 
                         :
@@ -379,23 +331,13 @@ class List extends React.Component {
                 
                     <View style={{flex:1}}>
                         <Text>Add a list item to get started!</Text>  
-
-{/*                         <View style={{marginTop:-50, alignSelf:'center'}}>
-                            <SvgUri height="500" width="900" source={require('./../assets/listitems.svg')}/>
-                        </View> */}
-     
                     </View>
                     
                 }
 
             </View>              
         )
-
     }
-
-
 }
-
-
 
 export default List;

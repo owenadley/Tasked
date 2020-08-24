@@ -88,56 +88,6 @@ app.post('/registerUser', (req, res) => {
 //---------------------------------------------------------
 
 
-// create a new list item
-app.post('/createNewListItem', (req, res) => {
-
-    console.log('here')
-    var title = req.param('title')
-    var idusers = req.param('idusers')
-    var idlists = req.param('idlists')
-
-    var sql = `INSERT INTO listitems (idusers, idlists, title) VALUES ('${idusers}', '${idlists}', '${title}')`
-    console.log(sql);
-    conn.query(sql, function(err, result) {
-        if (err) {
-            throw err;
-        };
-        res.json({success: 1});
-    })
-});
-
-app.get('/getListItems', (req, res) => {
-
-    console.log('here');
-    var idusers = req.param('idusers');
-    var idlists = req.param('idlists');
-
-    var sql = `SELECT * FROM listitems WHERE idusers=${idusers} AND idlists=${idlists}`
-    console.log('GETTING LIST ITEMS')
-    conn.query(sql, function(err, result) {
-        if (err) {
-            throw err;
-        };
-        console.log(result)
-        var listitems = result;
-  
-        return res.json({listitems: listitems})
-    })
-})
-
-app.post('/toggleListItem', (req, res) => {
-
-    var idlistitems = req.param('idlistitems')
-    var completed = req.param('value')
-
-    var sql = `UPDATE listitems SET completed = ${completed} WHERE idlistitems = ${idlistitems}`
-    conn.query(sql, function(err, result) {
-        if (err) {
-            throw err;
-        };
-        res.json({success: 1});
-    })
-})
 
 app.post('/createList', (req, res) => {
 
@@ -196,6 +146,12 @@ app.post('/deleteList', (req, res) => {
     })
 })
 
+
+
+//--------------------------------------------------------------
+// ------------------ LIST ITEM OPERATIONS ---------------------
+//--------------------------------------------------------------
+
 app.post('/deleteListItem', (req, res) => {
 
     var idlistitems = req.param('idlistitems')
@@ -210,4 +166,71 @@ app.post('/deleteListItem', (req, res) => {
     })
 })
 
+app.post('/toggleListItem', (req, res) => {
 
+    var idlistitems = req.param('idlistitems')
+    var completed = req.param('value')
+
+    var sql = `UPDATE listitems SET completed = ${completed} WHERE idlistitems = ${idlistitems}`
+    conn.query(sql, function(err, result) {
+        if (err) {
+            throw err;
+        };
+        res.json({success: 1});
+    })
+})
+
+app.get('/getListItems', (req, res) => {
+
+    console.log('here');
+    var idusers = req.param('idusers');
+    var idlists = req.param('idlists');
+
+    var sql = `SELECT * FROM listitems WHERE idusers=${idusers} AND idlists=${idlists}`
+    console.log('GETTING LIST ITEMS')
+    console.log(sql)
+    conn.query(sql, function(err, result) {
+        if (err) {
+            throw err;
+        };
+        console.log(result)
+        var listitems = result;
+  
+        return res.json({listitems: listitems})
+    })
+})
+
+
+// create a new list item
+app.post('/createNewListItem', (req, res) => {
+
+    console.log('1. CREATE NEW LIST ITEM')
+    var title = req.param('title')
+    var idusers = req.param('idusers')
+    var idlists = req.param('idlists')
+
+    var sql = `INSERT INTO listitems (idusers, idlists, title) VALUES ('${idusers}', '${idlists}', '${title}')`
+    console.log('2. ' + sql);
+    conn.query(sql, function(err, result) {
+        if (err) {
+            throw err;
+        };
+        res.json({success: 1});
+    })
+});
+
+app.post('/updateListItem', (req, res) => {
+
+    var listItemTitle = req.param('title')
+    var idlistitems = req.param('idlistitems')
+    
+    var sql = `UPDATE listitems SET title = '${listItemTitle}' WHERE idlistitems = ${idlistitems}`
+    console.log("===================== SQL ======================")
+    console.log(sql)
+    conn.query(sql, function(err, result) {
+        if (err) {
+            throw err;
+        };
+        res.json({success: 1});
+    })
+})
