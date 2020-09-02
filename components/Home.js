@@ -12,6 +12,7 @@ import ListPreview from './ListPreview';
 import Header from './Header';
 import {AuthContext} from './context';
 import ButtonAdd from './ButtonAdd';
+import DailyPlanner from './DailyPlanner'
 
 function Home(props) {
 
@@ -59,11 +60,12 @@ function Home(props) {
 
     return (
 
-        <View style={{flex:1, backgroundColor:'#ecf0f1', padding: 20}}>
+        <View style={{flex:1, backgroundColor:'#ecf0f1'}}>
             
-            <View style={{flex:1, flexDirection:'row', zIndex:1, backgroundColor:'transparent', elevation:100, position:'absolute', bottom: 20, right:0, justifyContent:'flex-start'}}>
-              <ButtonAdd btnHandler={createNewList}/>
-            </View>
+          <View style={{flex:1, flexDirection:'row', zIndex:1, backgroundColor:'transparent', elevation:100, position:'absolute', bottom: 20, right:0, justifyContent:'flex-start'}}>
+            <ButtonAdd btnHandler={createNewList}/>
+          </View>
+
           <Header 
             navigation={props.navigation} 
             lName="bars" 
@@ -77,7 +79,10 @@ function Home(props) {
               lists.length > 0 ?
 
               <View>
-                  <ScrollView style={{marginTop: 20}}>
+                  <ScrollView style={{}}>
+
+                    <DailyPlanner />
+
                     <View style={{flexDirection:'row', flexWrap:"wrap"}}>
                       {/* On the home page, list out all of the users lists */}   
                       {lists.map((list) => {

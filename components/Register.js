@@ -44,7 +44,7 @@ function Register(props) {
                         onChangeText={value => setFname(value)}/>
                 </View>
 
-                <View style={{ backgroundColor:'#fff', width: Dimensions.get('window').width - 50, padding: 20, paddingBottom: 0, borderRadius: 10, alignItems:'center'}}>
+                <View style={{ marginTop: 30,backgroundColor:'#fff', width: Dimensions.get('window').width - 50, padding: 20, paddingBottom: 0, borderRadius: 10, alignItems:'center'}}>
                     <Input  
                         placeholder="Your Email" 
                         leftIcon={<Icon name='envelope' size={20} color='#44bd32'/>}
@@ -54,7 +54,7 @@ function Register(props) {
                 </View>
 
 
-                <View style={{ marginTop: 30, backgroundColor:'#fff', width: Dimensions.get('window').width - 50, padding: 10, paddingBottom: 0, borderRadius: 10, alignItems:'center'}}>
+                <View style={{ marginTop: 30, backgroundColor:'#fff', width: Dimensions.get('window').width - 50, padding: 20, paddingBottom: 0, borderRadius: 10, alignItems:'center'}}>
                     <Input 
                         placeholder="Password" 
                         leftIcon={<Icon name='lock' size={20} color='#44bd32'/>}

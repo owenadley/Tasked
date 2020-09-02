@@ -36,7 +36,6 @@ app.get('/getUserName', (req, res) => {
             throw err;
         };
         var data = result[0];
-       console.log(data);
 
         return res.json({data: data})
     })
@@ -49,7 +48,6 @@ app.get('/verifyUser', (req, res) => {
     const pwd = req.param('pwd')
 
     var sql = `SELECT * from users WHERE email=${email} AND password=${pwd}`
-    console.log(sql);
 
     conn.query(sql, function(err, result) {
         if (err) {
@@ -57,7 +55,6 @@ app.get('/verifyUser', (req, res) => {
         };
 
         var data = result[0];
-        console.log(data);
 
         return res.json({data: data})
     })
@@ -69,10 +66,8 @@ app.post('/registerUser', (req, res) => {
     const email = req.param('email')
     const pwd = req.param('pwd')
 
-    console.log('here')
 
     var sql = `INSERT INTO users (fname, email, password) VALUES (${fname}, ${email}, ${pwd})`
-    console.log(sql)
     conn.query(sql, function(err, result) {
         if (err) {
             throw err;
@@ -123,7 +118,6 @@ app.post('/updateList', (req, res) => {
     var idlists = req.param('idlists')
     
     var sql = `UPDATE lists SET name ='${listName}' WHERE idlists = ${idlists}`
-    console.log(sql)
     conn.query(sql, function(err, result) {
         if (err) {
             throw err;
@@ -137,7 +131,6 @@ app.post('/deleteList', (req, res) => {
     var idlists = req.param('idlists')
     
     var sql = `DELETE FROM lists WHERE idlists=${idlists}`
-    console.log(sql)
     conn.query(sql, function(err, result) {
         if (err) {
             throw err;
@@ -157,7 +150,7 @@ app.post('/deleteListItem', (req, res) => {
     var idlistitems = req.param('idlistitems')
     
     var sql = `DELETE FROM listitems WHERE idlistitems=${idlistitems}`
-    console.log(sql)
+
     conn.query(sql, function(err, result) {
         if (err) {
             throw err;
@@ -182,17 +175,16 @@ app.post('/toggleListItem', (req, res) => {
 
 app.get('/getListItems', (req, res) => {
 
-    console.log('here');
     var idusers = req.param('idusers');
     var idlists = req.param('idlists');
 
     var sql = `SELECT * FROM listitems WHERE idusers=${idusers} AND idlists=${idlists}`
-    console.log('GETTING LIST ITEMS')
-    console.log(sql)
+
     conn.query(sql, function(err, result) {
         if (err) {
             throw err;
         };
+        console.log('GET LIST ITEMS RESULT')
         console.log(result)
         var listitems = result;
   
@@ -204,20 +196,25 @@ app.get('/getListItems', (req, res) => {
 // create a new list item
 app.post('/createNewListItem', (req, res) => {
 
-    console.log('1. CREATE NEW LIST ITEM')
     var title = req.param('title')
     var idusers = req.param('idusers')
     var idlists = req.param('idlists')
 
-    var sql = `INSERT INTO listitems (idusers, idlists, title) VALUES ('${idusers}', '${idlists}', '${title}')`
-    console.log('2. ' + sql);
+    let datetime = new Date();
+    datetime = datetime.toISOString().slice(0, 19).replace('T', ' ');
+
+    var sql = `INSERT INTO listitems (idusers, idlists, title, datecreated) VALUES ('${idusers}', '${idlists}', '${title}', '${datetime}')`
     conn.query(sql, function(err, result) {
         if (err) {
             throw err;
         };
+
         res.json({success: 1});
     })
+    console.log('NEW ITEM ADDED')
 });
+
+
 
 app.post('/updateListItem', (req, res) => {
 
@@ -225,8 +222,7 @@ app.post('/updateListItem', (req, res) => {
     var idlistitems = req.param('idlistitems')
     
     var sql = `UPDATE listitems SET title = '${listItemTitle}' WHERE idlistitems = ${idlistitems}`
-    console.log("===================== SQL ======================")
-    console.log(sql)
+
     conn.query(sql, function(err, result) {
         if (err) {
             throw err;

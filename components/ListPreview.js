@@ -9,7 +9,7 @@ export default function ListPreview(props) {
     return (
         <View 
             style={{ 
-                width: Dimensions.get('window').width / 2 - 60,
+                width: Dimensions.get('window').width / 2 - 40,
                 height: 180,
                 borderWidth: 0,
                 borderColor: '#000',

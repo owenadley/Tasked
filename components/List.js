@@ -16,6 +16,10 @@ import Header from './Header';
 import {AuthContext} from './context';
 import EditField from './EditField';
 import NewListItem from './NewListItem';
+import LottieView from 'lottie-react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import SvgUri from 'react-native-svg-uri';
+import ListItemSettings from './ListItemSettings'
 
 class List extends React.Component {
 
@@ -26,6 +30,7 @@ class List extends React.Component {
         this.state = {
             completedListItems: [],
             incompleteListItems: [],
+            loading: true,
             newListItem: false,
             newListItemName: '',
             user: 'user',
@@ -39,6 +44,8 @@ class List extends React.Component {
         this.getListItems();
     }
 
+    // TODO, see if we can optimize how we go about doing this
+    // also, maybe we can add a filter option to sort them different ways
     getListItems = () => {  // fetch the list items for a specific list and save it to state
         fetch(`http://localhost:5000/getListItems/?idusers=${this.context.userTok.idusers}&idlists=${this.props.route.params.list.idlists}`)
         .then((response) => response.json())
@@ -48,18 +55,23 @@ class List extends React.Component {
             let incompleteListItems = [];
 
             responseJson.listitems.forEach((listitem) => {
-                listitem.completed ? completedListItems.unshift(listitem) : incompleteListItems.push(listitem)
+                listitem.completed ? completedListItems.unshift(listitem) : incompleteListItems.unshift(listitem)
             })
+
+
 
             this.setState({
                 completedListItems: completedListItems,
-                incompleteListItems: incompleteListItems
+                incompleteListItems: incompleteListItems,
+                selectedListItem: null, // if we are getting new data because we edited a list item, we want to clear the selected item
+                loading: false
             });
         })
         .catch((error) => {
             console.log(error); 
         })
     }
+
 
     updateList = (name) => {    // if we change any data regarding the list, we need to refresh them
         name ? this.setState({listName: name}) : null
@@ -127,14 +139,13 @@ class List extends React.Component {
     }
 
     selectListItem = (item) => {
-
         this.setState({selectedListItem:item});
 
         Animated.timing(
             // Uses easing functions
             this.state.slideAnim, // The value to drive
             { 
-                toValue: -(Dimensions.get('window').height),
+                toValue: -Dimensions.get('window').height-150,
                 duration:700,
                 useNativeDriver:true 
             } // Configuration
@@ -143,71 +154,37 @@ class List extends React.Component {
 
     }
 
-    closeListItemDrawer = () => { 
-        Animated.timing(
-            // Uses easing functions
-            this.state.slideAnim, // The value to drive
-            { 
-                toValue: 0, 
-                duration:700,
-                useNativeDriver:true 
-            } // Configuration
 
-          ).start(); // Don't forget start!
-    }
+    deleteListItem = async () => {
 
-    deleteListItem = () => {
         // delete the list item that was most recently set
         const { idlistitems } = this.state.selectedListItem;
 
-        console.log('here in delete')
-
-        // delete the selected list item
-        fetch(`http://localhost:5000/deleteListItem/?idlistitems=${idlistitems}`, {
+        let postSettings = {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then(
+        }
 
-            console.log('the delete is finished'),
+        try {
+            const delItem = await fetch(`http://localhost:5000/deleteListItem/?idlistitems=${idlistitems}`, postSettings)
+            const res = await delItem.json();   // use this to verify delete or not
+            this.getListItems();
+        } catch (e) {
+            console.log(e);
+        }
 
-            // update the list items
-            this.getListItems(),
-            // close the drawer for the deleted item
-            this.closeListItemDrawer()
-        )
-        .catch((error) => {
-          console.log(error);
-        })
-    }
-
-    updateListItem = (name) => {
-        const { idlistitems } = this.state.selectedListItem;
-
-        fetch(`http://localhost:5000/updateListItem/?idlistitems=${idlistitems}&title=${name}`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(
-            this.getListItems()
-        )
-        .catch((error) => {
-            console.log(error);
-        }) 
     }
 
     render() {
-
+        
         return (
 
             <View style={{flex: 1, backgroundColor:'#ecf0f1'}}>
 
-                <NewListItem updateList={this.getListItems} idlists={this.props.route.params.list.idlists} />
+                <NewListItem getListItems={this.getListItems} idlists={this.props.route.params.list.idlists} />
 
                 <Header 
                     navigation={this.props.navigation} 
@@ -218,126 +195,100 @@ class List extends React.Component {
                     midContent={`${this.state.completedListItems.length} / ${this.state.incompleteListItems.length + this.state.completedListItems.length}`}
                     title={this.state.listName}/>
 
+                {this.state.loading ?
 
-                {this.state.incompleteListItems.length > 0 || this.state.completedListItems.length > 0 ?
-                <>
-                    <ScrollView style={{display: 'flex', margin: 10, alignContent: 'center', flexDirection:'column'}}>
-                    {this.state.incompleteListItems.map((items) => {
-                        return (
-                                <View 
-                                    key={items.idlistitems} 
-                                    style={{
-                                        display:'flex', 
-                                        flexDirection:'row', 
-                                        backgroundColor:'#fff',
-                                        elevation: 5,
-                                        margin:13,
-                                        borderRadius:10,
-                                        alignItems:'center'
-                                    }}>
+                    <LottieView source={require('./../assets/loader-sm.json')} autoPlay loop/>
 
-                                    <CheckBox 
-                                        containerStyle={{backgroundColor: '#fff'}}
-                                        center 
-                                        title={items.title} 
-                                        checked={Boolean(items.completed)}
-                                        onPress={() => this.toggleCheckbox(items.idlistitems, items.completed)}
-                                    />
-                                    <TouchableOpacity style={{marginLeft:'auto'}} onPress={() => this.selectListItem(items)}><Icon style={{marginRight:20}} name="ellipsis-h" size={25}/></TouchableOpacity>
-                                </View>
-                    
-                            )
-                        })
-                    }
+                : 
 
-                    {this.state.completedListItems.map((items) => {
-                        return (
-                                <View key={items.idlistitems}                                     
-                                style={{
-                                    display:'flex', 
-                                    flexDirection:'row', 
-                                    backgroundColor:'#fff',
-                                    elevation: 5,
-                                    margin:13,
-                                    borderRadius:10,
-                                    alignItems:'center'
-                                }}>
-                                    <CheckBox 
-                                        containerStyle={{backgroundColor: '#fff'}}
-                                        center 
-                                        title={items.title} 
-                                        checkedColor='#44bd32'
-                                        textStyle={{textDecorationLine:'line-through', color:'grey'}}
-                                        checked={Boolean(items.completed)}
-                                        onPress={() => this.toggleCheckbox(items.idlistitems, items.completed)}
-                                    />
-                                    <TouchableOpacity style={{marginLeft:'auto'}} onPress={() => this.selectListItem(items)}><Icon style={{marginRight:20}} name="ellipsis-h" size={25}/></TouchableOpacity>
+                    <View>
+                        {this.state.incompleteListItems.length > 0 || this.state.completedListItems.length > 0 ?
+                        <>
+                            <ScrollView style={{display: 'flex', margin: 10, marginBottom:210, alignContent: 'center', flexDirection:'column'}}>
+                            {this.state.incompleteListItems.map((items) => {
+                                return (
+                                        <View 
+                                            key={items.idlistitems} 
+                                            style={{
+                                                display:'flex', 
+                                                flexDirection:'row', 
+                                                backgroundColor:'#fff',
+                                                elevation: 5,
+                                                margin:13,
+                                                borderRadius:10,
+                                                alignItems:'center'
+                                            }}>
 
-                                </View>
-                    
-                            )
-                        })
-                    }
+                                            <CheckBox 
+                                                containerStyle={{backgroundColor: '#fff'}}
+                                                center 
+                                                title={items.title} 
+                                                checked={Boolean(items.completed)}
+                                                onPress={() => this.toggleCheckbox(items.idlistitems, items.completed)}
+                                            />
+                                            <TouchableOpacity style={{marginLeft:'auto'}} onPress={() => this.selectListItem(items)}><Icon style={{marginRight:20}} name="ellipsis-h" size={25}/></TouchableOpacity>
+                                        </View>
+                            
+                                    )
+                                })
+                            }
 
-                    </ScrollView>
+                            {this.state.completedListItems.map((items) => {
+                                return (
+                                        <View key={items.idlistitems}                                     
+                                        style={{
+                                            display:'flex', 
+                                            flexDirection:'row', 
+                                            backgroundColor:'#fff',
+                                            elevation: 5,
+                                            margin:13,
+                                            borderRadius:10,
+                                            alignItems:'center'
+                                        }}>
+                                            <CheckBox 
+                                                containerStyle={{backgroundColor: '#fff'}}
+                                                center 
+                                                title={items.title} 
+                                                checkedColor='#44bd32'
+                                                textStyle={{textDecorationLine:'line-through', color:'grey'}}
+                                                checked={Boolean(items.completed)}
+                                                onPress={() => this.toggleCheckbox(items.idlistitems, items.completed)}
+                                            />
+                                            <TouchableOpacity style={{marginLeft:'auto'}} onPress={() => this.selectListItem(items)}><Icon style={{marginRight:20}} name="ellipsis-h" size={25}/></TouchableOpacity>
 
-                    {this.state.selectedListItem ?
-                        
-                        <Animated.View style={{ 
-                            zIndex:2,
-                            position:'absolute', 
-                            width:Dimensions.get('window').width-20, 
-                            height:Dimensions.get('window').height-150,
-                            translateY:this.state.slideAnim, 
-                            bottom:-Dimensions.get('window').height,
-                            left:10, 
-                            backgroundColor:'#fff',
-                            elevation:20,
-                            borderTopRightRadius:30,
-                            borderTopLeftRadius:30,
-                            padding: 40,
+                                        </View>
+                            
+                                    )
+                                })
+                            }
 
-                            }}>
+                            </ScrollView>
 
-                            <View style={{alignSelf:'flex-end', marginBottom:20, paddingBottom:20}}>
-                                <TouchableOpacity onPress={this.closeListItemDrawer}>
-                                    <Icon style={{}} name='chevron-down' size={25}/>
-                                </TouchableOpacity>                                
-                            </View>
-
-                            <View>
-                                <EditField value={this.state.selectedListItem.title} callback={this.updateListItem} />
-                            </View>
-
-                            <View style={{flex: 1, flexDirection:'column', alignItems:'center'}}>
-
-                                    <TouchableOpacity onPress={this.deleteListItem} style={{marginTop:'auto', padding:20, borderTopWidth:1, borderBottomColor:"grey"}}>
-                                        <View style={{flexDirection:'row'}}>                                     
-                                            <Icon name='trash' size={25} />
-                                            <Text style={{marginLeft: 10, fontSize:18}}> Delete Item</Text>
-                                        </View>                                
-                                   </TouchableOpacity>
-                            </View>
-                        </Animated.View>
-
+                        </>
                         :
- 
-                        <></>
-                    
-                    }
-
-                </>
-                :
-                
-                    <View style={{flex:1}}>
-                        <Text>Add a list item to get started!</Text>  
+                        
+                            <View style={{flex:1, padding:20}}>
+                                <Text style={{fontSize:20}}>Add a list item to get started!</Text>  
+                                <SvgUri width={Dimensions.get('window').width} height="400" source={require('../assets/listitems.svg')}/>
+                            </View>
+                            
+                        }
                     </View>
-                    
+
                 }
 
+                    {this.state.selectedListItem ?   
+                        <ListItemSettings 
+                            position={this.state.slideAnim} 
+                            listitem={this.state.selectedListItem}
+                            delete={this.deleteListItem}
+                            getListItems={this.getListItems}
+                        />
+                        :
+                        <></>
+                    }
             </View>              
         )
     }
 }
-
 export default List;
