@@ -12,7 +12,8 @@ import ListPreview from './ListPreview';
 import Header from './Header';
 import {AuthContext} from './context';
 import ButtonAdd from './ButtonAdd';
-import DailyPlanner from './DailyPlanner'
+import DailyPlannerPreview from './DailyPlannerPreview'
+import LineBreak from './LineBreak';
 
 function Home(props) {
 
@@ -52,11 +53,6 @@ function Home(props) {
         props.navigation.navigate('List', {list: list, updateLists: updateLists})
     }
 
-    const toggleListView = (view) => {
-      // if view is false, we will display dailyView
-      // if view is true, we will display listView
-      setListView(view);
-    }
 
     return (
 
@@ -68,20 +64,23 @@ function Home(props) {
 
           <Header 
             navigation={props.navigation} 
-            lName="bars" 
-            lHandler={props.navigation.openDrawer} 
+            rName="bars" 
+            rHandler={props.navigation.openDrawer} 
             title={"Hi, " + user.fname}
-            toggleView={toggleListView}
-            selectedView={listView}
+            isHome={true}
           />
 
-          {listView==true ?
-              lists.length > 0 ?
+     
+            {lists.length > 0 ?
 
-              <View>
-                  <ScrollView style={{}}>
+              <View style={{marginBottom:110}}>
+                  <ScrollView style={{marginBottom:0}}>
 
-                    <DailyPlanner />
+                    <TouchableOpacity onPress={() => props.navigation.navigate('DailyPlanner')}>
+                      <DailyPlannerPreview />
+                    </TouchableOpacity>
+
+                    <LineBreak title="Your Lists"/>
 
                     <View style={{flexDirection:'row', flexWrap:"wrap"}}>
                       {/* On the home page, list out all of the users lists */}   
@@ -99,23 +98,12 @@ function Home(props) {
                   </ScrollView>
               </View>
 
-              :
+            :
 
               <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                 <Text>You have no tasks, create one!</Text>
               </View>
-          
-          :
-
-            <View>
-              <ScrollView style={{marginTop: 20}}>
-
-                
-
-              </ScrollView>
-            </View>
-            
-          }
+            }
 
   
         </View>

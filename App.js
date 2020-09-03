@@ -22,6 +22,7 @@ import { AuthContext } from './components/context'
 import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HomeNav from './components/HomeNav'
+import DailyPlanner from './components/DailyPlanner';
 
 import { storeTok } from './redux/actions'
 import { useSelector, useDispatch } from "react-redux";
@@ -80,8 +81,6 @@ function App() {
   const authContext = useMemo(() => ({
     signIn: async(userEmail, password) => {
 
-      console.log('hello world')
-
       let userToken;
       userToken = null;
 
@@ -103,8 +102,6 @@ function App() {
     },
 
     signOut: async() => {
-
-      console.log('here beer');
 
       try {
         userToken = await AsyncStorage.removeItem('userToken')
@@ -201,6 +198,7 @@ function App() {
                 <Stack.Screen name="NewList" component={NewList}/>
                 <Stack.Screen name="List" component={List}/>
                 <Stack.Screen name="ListSettings" component={ListSettings}/>
+                <Stack.Screen name="DailyPlanner" component={DailyPlanner}/>
         
             </>
 

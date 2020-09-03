@@ -13,8 +13,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 // lHandler: onClick method for top left
 // rName: icon name for top right
 // rHandler: onClick method for top right
+// midContent: Text content for middle
 // title: title for the current screen
-// listToggle: boolean for displaying the list toggle button (only used on home screen)
 
 function Header(props) {
 
@@ -28,27 +28,32 @@ function Header(props) {
                 flexDirection: "row",
                 justifyContent: "space-between"}}>
 
-                <TouchableOpacity onPress={props.lHandler}>
-                    <Icon name={props.lName} size={30} color='#000'/>
-                </TouchableOpacity>
+                {props.isHome ?
+                    <Text style={{fontFamily: 'Alata-Regular', fontSize: 30}}>{props.title}</Text>
+                :
                 
+                    props.lHandler ?
+
+                        <TouchableOpacity style={{marginRight:'auto'}} onPress={props.lHandler}>
+                            <Icon name={props.lName} size={30} color='#000'/>
+                        </TouchableOpacity>
+
+                    : <></>
+
+                }
+
                 {props.midContent ?
 
-                    <Text style={{fontSize:20}}>{props.midContent}</Text>
+                    <View style={{}}>
+                        <Text style={{fontSize:20}}>{props.midContent}</Text>
+                    </View>
 
                 :
                     <></>
                 }
 
                 {props.rHandler ?
-                    <TouchableOpacity style={{
-
-                    backgroundColor: 'transparent',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                    }}
-                    onPress={props.rHandler}>
-
+                    <TouchableOpacity style={{marginLeft:'auto'}} onPress={props.rHandler}>
                         <Icon name={props.rName} size={30} color='#000'/>
 
                     </TouchableOpacity>
@@ -56,28 +61,15 @@ function Header(props) {
                     <></>
                 }
 
-                {props.toggleView ?
-                    
-                    <View style={{width: 200, flexDirection:'row', borderWidth: 2, borderRadius: 5, borderColor: '#44bd32', alignItems:'center', justifyContent:'center'}}>
-                        <TouchableOpacity onPress={() => props.toggleView(true)} style={props.selectedView ? styles.selected : styles.notSelected}>
-                            <Text style={props.selectedView ? {color:'#fff'} : {color:'#000'}}>Lists</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => props.toggleView(false)} style={!props.selectedView ? styles.selected : styles.notSelected}>
-                            <Text style={props.selectedView ? {color:'#000'} : {color:'#fff'}}>Daily</Text>
-                        </TouchableOpacity>                        
-                    </View>
-
-
-                :
-                    <></>
-                }
-
 
             </View>
 
-            <View style={{display: "flex"}}>
-                <Text style={{fontFamily: 'Alata-Regular', fontSize: 30}}>{props.title}</Text>
-            </View>
+            {!props.isHome ?
+                <View style={{display: "flex"}}>
+                    <Text style={{fontFamily: 'Alata-Regular', fontSize: 30}}>{props.title}</Text>
+                </View>
+            :<></>
+            }
 
         </View>
 

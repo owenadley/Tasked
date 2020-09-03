@@ -192,6 +192,24 @@ app.get('/getListItems', (req, res) => {
     })
 })
 
+app.get('/getDailyListItems', (req, res) => {
+
+    var idusers = req.param('idusers');
+    var sql = `SELECT * FROM listitems WHERE idusers=${idusers} AND scheduledcompletion IS NOT NULL`
+
+    conn.query(sql, function(err, result) {
+        if (err) {
+            throw err;
+        };
+        console.log(result)
+        var listitems = result;
+  
+        return res.json({scheduledlistitems: listitems})
+    })
+
+
+})
+
 
 // create a new list item
 app.post('/createNewListItem', (req, res) => {

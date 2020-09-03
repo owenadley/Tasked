@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import Home from './Home';
 import { AuthContext } from './context'
+import {View, Text} from 'react-native'
 
 
 
@@ -13,11 +14,11 @@ function HomeNav(props) {
     const Drawer = createDrawerNavigator();
 
     return (
-      <Drawer.Navigator initialRouteName="Home" drawerContent={props => {
+      <Drawer.Navigator drawerStyle={{flex:1}} initialRouteName="Home" drawerContent={props => {
           return (
-              <DrawerContentScrollView {...props}>
+              <DrawerContentScrollView style={{flex:1}} {...props}>
                   <DrawerItemList {...props} />
-                  <DrawerItem label="Logout" onPress={signOut}/>
+                  <DrawerItem style={{backgroundColor:'green'}} labelStyle={{color:'#fff'}} label="Logout" onPress={signOut}/>
               </DrawerContentScrollView>
           )
       }}>
