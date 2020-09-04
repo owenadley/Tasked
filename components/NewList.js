@@ -20,13 +20,13 @@ import ColorPicker from './ColorPicker'
 function NewList(props) {
 
     const [listName, setListName] = useState(0);
-    const [color, setColor] = useState('white')
+    const [color, setColor] = useState('red')
     const userToken = useContext(AuthContext)
     const user = userToken.userTok
 
     const createList = () => {
       
-        fetch(`http://localhost:5000/createList/?idusers=${user.idusers}&listname=${listName}`, {
+        fetch(`http://localhost:5000/createList/?idusers=${user.idusers}&listname=${listName}&color=${color}`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -39,7 +39,10 @@ function NewList(props) {
         .catch((error) => {
             console.log(error);
         })
-    
+    }
+
+    changeColor = (color) => {
+        setColor(color)
     }
 
     return (
@@ -62,7 +65,7 @@ function NewList(props) {
 
                 <View style={{marginTop:50, marginLeft:50, marginRight: 50,  display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'space-between',flexWrap:'wrap',}}>
         
-                    <ColorPicker />
+                    <ColorPicker onColorChange={changeColor}/>
 
 
                 </View>

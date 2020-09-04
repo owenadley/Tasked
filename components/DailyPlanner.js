@@ -1,9 +1,10 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Header from './Header';
 import {CheckBox} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {AuthContext} from './context';
+import  NewListItem  from "./NewListItem";
 
 function DailyPlanner(props) {
 
@@ -35,20 +36,24 @@ function DailyPlanner(props) {
                 lHandler={props.navigation.goBack}
                 title={"Daily Tasks"}/>
                 
+                <NewListItem getListItems={getDailyListItems} />
+
+                
                 <View style={{marginLeft:20, marginRight:20}}>
                     <Text style={{fontFamily: 'Alata-Regular', fontSize:20, marginBottom:20}}>Today</Text>
 
                     {dailyListItems.length > 0 ?
-                    <>
+                    <ScrollView>
                         {dailyListItems.map((item) => {
                         return (
                             <View 
-                            key={2} 
+                            key={item.idlistitems} 
                             style={{
                                 display:'flex', 
                                 flexDirection:'row', 
                                 backgroundColor:'#fff',
                                 elevation: 5,
+                                margin:13,
                                 borderRadius:10,
                                 alignItems:'center'
                             }}>
@@ -65,7 +70,7 @@ function DailyPlanner(props) {
                         )
                         
                         })}
-                    </>
+                    </ScrollView>
                     : 
                         <></>
                     }

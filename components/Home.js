@@ -88,7 +88,7 @@ function Home(props) {
                         return (
                     
                             <TouchableOpacity key={list.idlists} onPress={() => selectList(list)}>
-                                <ListPreview name={list.name}/>
+                                <ListPreview color={list.color} name={list.name}/>
                               </TouchableOpacity>
                     
                             )

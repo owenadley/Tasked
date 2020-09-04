@@ -19,7 +19,9 @@ export default function ListPreview(props) {
                 backgroundColor: '#fff',
                 elevation:10,
                 justifyContent:'center',
-                alignItems:'center'
+                alignItems:'center',
+                borderBottomWidth:12,
+                borderBottomColor: props.color
             }}>  
             <Text style={{fontSize: 18}}>{props.name}</Text>
         </View>

@@ -38,6 +38,7 @@ function NewListItem(props) {
             flexDirection:'row', 
             backgroundColor:'#fff', 
             flex:1, 
+            elevation:6,
             height: 70, 
             width:Dimensions.get('window').width, 
             justifyContent:'center',

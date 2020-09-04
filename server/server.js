@@ -1,7 +1,10 @@
 
 var mysql = require('mysql');
 var express = require('express');
+var moment = require('moment');
 
+/* moment.format()
+ */
 var conn = mysql.createConnection({
     host: '',
     user: '',
@@ -88,7 +91,8 @@ app.post('/createList', (req, res) => {
 
     var listName = req.param('listname')
     var idusers = req.param('idusers')
-    var sql = `INSERT INTO lists (name, idusers) VALUES ('${listName}', '${idusers}')`
+    var color = req.param('color')
+    var sql = `INSERT INTO lists (name, idusers, color) VALUES ('${listName}', '${idusers}', '${color}')`
     conn.query(sql, function(err, result) {
         if (err) {
             throw err;
@@ -184,8 +188,7 @@ app.get('/getListItems', (req, res) => {
         if (err) {
             throw err;
         };
-        console.log('GET LIST ITEMS RESULT')
-        console.log(result)
+
         var listitems = result;
   
         return res.json({listitems: listitems})
@@ -201,8 +204,14 @@ app.get('/getDailyListItems', (req, res) => {
         if (err) {
             throw err;
         };
-        console.log(result)
-        var listitems = result;
+
+        let datetime = new Date();
+        datetime = datetime.toISOString().slice(0, 19).replace('T', ' ');
+
+        // take only the tasks that are scheduled for today
+        let listitems = result.filter(task => 
+            moment(task.scheduledcompletion).format('L')  == moment(datetime).format('L')
+        );
   
         return res.json({scheduledlistitems: listitems})
     })
@@ -220,8 +229,14 @@ app.post('/createNewListItem', (req, res) => {
 
     let datetime = new Date();
     datetime = datetime.toISOString().slice(0, 19).replace('T', ' ');
+  
+    if (idlists == 'undefined') {
+        var sql = `INSERT INTO listitems (idusers, idlists, title, datecreated, scheduledcompletion) VALUES ('${idusers}', 'null', '${title}', '${datetime}', '${datetime}')`
+    } else {
+        var sql = `INSERT INTO listitems (idusers, idlists, title, datecreated) VALUES ('${idusers}', '${idlists}', '${title}', '${datetime}')`
 
-    var sql = `INSERT INTO listitems (idusers, idlists, title, datecreated) VALUES ('${idusers}', '${idlists}', '${title}', '${datetime}')`
+    }
+
     conn.query(sql, function(err, result) {
         if (err) {
             throw err;

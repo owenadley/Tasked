@@ -1,8 +1,9 @@
 import React, { useState } from'react'
 import {TouchableOpacity, View, Text} from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 function ColorPicker(props) {
-    let colorsMap = {
+    let iconsMap = {
         'red':true,
         'blue':false,
         'green':false,
@@ -15,18 +16,18 @@ function ColorPicker(props) {
         'lime':false, 
     }
 
-    const [selectedColor, setSelectedColor] = useState('red')
-    const [colors, setColors] = useState(colorsMap)
+    const [selectedIcon, setSelectedIcon] = useState('red')
+    const [icon, setIcon] = useState(iconsMap)
 
-    const selectColor = (key) => {
+    const selectIcon = (key) => {
 
-        let newColors = colors;
+/*         let newColors = colors;
         newColors[selectedColor] = false;
         newColors[key] = true
 
         setColors(newColors)
         setSelectedColor(key);
-        props.onColorChange(key);
+        props.onColorChange(key); */
     }
 
     return (
