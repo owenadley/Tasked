@@ -56,7 +56,7 @@ function Home(props) {
 
     return (
 
-        <View style={{flex:1, backgroundColor:'#ecf0f1'}}>
+        <View style={{flex:1, backgroundColor:'#ecf0f1', padding:20}}>
             
           <View style={{flex:1, flexDirection:'row', zIndex:1, backgroundColor:'transparent', elevation:100, position:'absolute', bottom: 20, right:0, justifyContent:'flex-start'}}>
             <ButtonAdd btnHandler={createNewList}/>
@@ -73,8 +73,8 @@ function Home(props) {
      
             {lists.length > 0 ?
 
-              <View style={{marginBottom:110}}>
-                  <ScrollView style={{marginBottom:0}}>
+              <View>
+                  <ScrollView>
 
                     <TouchableOpacity onPress={() => props.navigation.navigate('DailyPlanner')}>
                       <DailyPlannerPreview />
@@ -87,7 +87,7 @@ function Home(props) {
                       {lists.map((list) => {
                         return (
                     
-                            <TouchableOpacity key={list.idlists} onPress={() => selectList(list)}>
+                            <TouchableOpacity style={{flex:1, flexGrow:1, flexBasis:150}} key={list.idlists} onPress={() => selectList(list)}>
                                 <ListPreview color={list.color} name={list.name}/>
                               </TouchableOpacity>
                     

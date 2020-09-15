@@ -182,7 +182,7 @@ class List extends React.Component {
         
         return (
 
-            <View style={{flex: 1, backgroundColor:'#ecf0f1'}}>
+            <View style={{flex: 1, backgroundColor:'#ecf0f1', padding:20}}>
 
                 <NewListItem getListItems={this.getListItems} idlists={this.props.route.params.list.idlists} />
 
@@ -193,7 +193,8 @@ class List extends React.Component {
                     rName="cog"
                     rHandler={this.listSettings}
                     midContent={`${this.state.completedListItems.length} / ${this.state.incompleteListItems.length + this.state.completedListItems.length}`}
-                    title={this.state.listName}/>
+                    title={this.state.listName}
+                />
 
                 {this.state.loading ?
 
@@ -204,7 +205,7 @@ class List extends React.Component {
                     <View>
                         {this.state.incompleteListItems.length > 0 || this.state.completedListItems.length > 0 ?
                         <>
-                            <ScrollView style={{display: 'flex', margin: 10, marginBottom:210, alignContent: 'center', flexDirection:'column'}}>
+                            <ScrollView style={{display: 'flex', alignContent: 'center', flexDirection:'column'}}>
                             {this.state.incompleteListItems.map((items) => {
                                 return (
                                         <View 

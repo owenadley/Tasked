@@ -9,9 +9,7 @@ return (
 
 
         <ImageBackground source={require('./../assets/gb2.jpg')} imageStyle={{borderRadius:20}} style={{
-        marginLeft:20, 
-        marginRight: 20, 
-        padding: 20,
+        padding:20,
         height: 150, 
         display:'flex',
         flexDirection:'row'}}>

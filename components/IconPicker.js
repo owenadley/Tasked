@@ -17,17 +17,17 @@ function ColorPicker(props) {
     }
 
     const [selectedIcon, setSelectedIcon] = useState('red')
-    const [icon, setIcon] = useState(iconsMap)
+    const [icons, setIcons] = useState(iconsMap)
 
     const selectIcon = (key) => {
 
-/*         let newColors = colors;
-        newColors[selectedColor] = false;
-        newColors[key] = true
+        let newIcons = icons;
+        newIcons[selectedIcon] = false;
+        newIcons[key] = true
 
-        setColors(newColors)
-        setSelectedColor(key);
-        props.onColorChange(key); */
+        setIcons(newColors)
+        setSelectedIcon(key);
+/*         props.onIconChange(key);  */
     }
 
     return (

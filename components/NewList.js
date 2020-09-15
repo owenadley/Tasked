@@ -20,7 +20,7 @@ import ColorPicker from './ColorPicker'
 function NewList(props) {
 
     const [listName, setListName] = useState(0);
-    const [color, setColor] = useState('red')
+    const [color, setColor] = useState('red');
     const userToken = useContext(AuthContext)
     const user = userToken.userTok
 
@@ -46,7 +46,7 @@ function NewList(props) {
     }
 
     return (
-        <View style={{flex: 1, backgroundColor: '#ecf0f1', }}>
+        <View style={{flex: 1, backgroundColor: '#ecf0f1', padding:20}}>
             
             <Header 
             navigation={props.navigation} 

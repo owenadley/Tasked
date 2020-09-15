@@ -48,7 +48,7 @@ function ListSettings(props) {
     }
 
     return (
-        <View style={{flex:1, backgroundColor:'#ecf0f1', padding: 20}}>
+        <View style={{flex:1, backgroundColor:'#ecf0f1'}}>
             
             <Header 
                 navigation={props.navigation} 

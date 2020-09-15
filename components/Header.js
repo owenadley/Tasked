@@ -20,7 +20,7 @@ function Header(props) {
 
     return (
 
-        <View style={{padding: 20}}>
+        <View style={{}}>
 
             <View style={{
                 marginBottom: 20, 
@@ -65,7 +65,7 @@ function Header(props) {
             </View>
 
             {!props.isHome ?
-                <View style={{display: "flex"}}>
+                <View style={{display: "flex", marginBottom:10}}>
                     <Text style={{fontFamily: 'Alata-Regular', fontSize: 30}}>{props.title}</Text>
                 </View>
             :<></>
